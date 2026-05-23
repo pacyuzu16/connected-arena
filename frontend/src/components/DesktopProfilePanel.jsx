@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { getTier } from "../utils/constants";
 import { ACHIEVEMENTS } from "./ProfilePanel";
+import SettingsPanel from "./SettingsPanel";
 
 const LEVEL_COLOR      = ["", "#64748b", "#3b82f6", "#8b5cf6", "#f59e0b", "#10b981"];
 const LEVEL_THRESHOLDS = [0, 0, 100, 300, 600, 1000];
@@ -36,6 +37,9 @@ export default function DesktopProfilePanel({
   theme,
   toggleTheme,
   onLeave,
+  settings,
+  updateSettings,
+  resetSettings,
 }) {
   const fileRef = useRef(null);
   const [editingName, setEditingName] = useState(false);
@@ -155,7 +159,12 @@ export default function DesktopProfilePanel({
           </button>
         )}
 
-        {/* Settings */}
+        {/* Settings Panel (mute toggles + language) */}
+        {settings && updateSettings && (
+          <SettingsPanel settings={settings} update={updateSettings} reset={resetSettings} />
+        )}
+
+        {/* Theme + Leave */}
         <div className="dpp-settings">
           <button className="dpp-setting-row" onClick={toggleTheme}>
             <span>{theme === "dark" ? "☀️" : "🌙"}</span>

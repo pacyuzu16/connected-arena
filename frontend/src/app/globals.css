@@ -630,6 +630,77 @@ html, body {
 
 .pred-hint { font-size: 11px; color: var(--text-3); }
 
+/* ── Settings Panel ── */
+.settings-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 12px 0;
+}
+.settings-hdr {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  margin-bottom: 10px;
+}
+.settings-list { display: flex; flex-direction: column; gap: 6px; }
+.settings-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; cursor: pointer;
+  transition: background .15s, border-color .15s;
+  color: var(--text); font-family: inherit; font-size: 13px;
+  text-align: left;
+}
+.settings-row:hover { background: var(--border); }
+.settings-icon  { font-size: 18px; width: 22px; text-align: center; }
+.settings-label { flex: 1; font-weight: 500; }
+.settings-toggle {
+  position: relative; width: 36px; height: 20px;
+  background: var(--text-3); border-radius: 12px;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.settings-toggle.on { background: #10b981; }
+.settings-toggle-dot {
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff;
+  transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.settings-toggle.on .settings-toggle-dot { transform: translateX(16px); }
+
+.settings-section-title {
+  font-size: 12px; font-weight: 700; color: var(--text-2);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  margin: 14px 4px 8px;
+}
+.settings-langs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.settings-lang {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  font-family: inherit; font-size: 13px; color: var(--text);
+  transition: background .15s, border-color .15s;
+}
+.settings-lang:hover { background: var(--border); }
+.settings-lang.active {
+  background: var(--accent-dim); border-color: var(--accent);
+  color: var(--accent);
+}
+.settings-lang-flag { font-size: 16px; }
+
+.settings-reset {
+  margin-top: 12px; width: 100%;
+  padding: 8px; background: transparent;
+  border: 1px dashed var(--border); border-radius: 8px;
+  color: var(--text-3); font-size: 12px; cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.settings-reset:hover { color: var(--text); border-color: var(--text-3); }
+
 /* xG bar in prediction modal */
 .pred-xg-wrap  { width: 100%; margin: 6px 0 4px; }
 .pred-xg-label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 4px; color: var(--text-2); }

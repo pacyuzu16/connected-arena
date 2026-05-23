@@ -16,6 +16,7 @@ import LiveChat from "../components/LiveChat";
 import ChatTab from "../components/ChatTab";
 import NotificationCenter from "../components/NotificationCenter";
 import useNotifications from "../hooks/useNotifications";
+import useSettings from "../hooks/useSettings";
 import { useTheme } from "../components/ThemeProvider";
 import { getTier } from "../utils/constants";
 // Dynamic import prevents amazon-cognito-identity-js from running during
@@ -318,12 +319,20 @@ export default function ArenaPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connect]);
 
-  // ── Notifications ──────────────────────────────────────────────────────
+  // ── User preferences (mute toggles + language) ─────────────────────────
+  const { settings, update: updateSettings, reset: resetSettings } = useSettings();
+
+  // ── Notifications (respects muteNotifications setting) ─────────────────
   const {
     permission, requestPermission,
     notifications, unreadCount,
     open: notifOpen, togglePanel: toggleNotif, closePanel: closeNotif, dismiss: dismissNotif,
-  } = useNotifications({ events, myPlayer, matchPhase });
+  } = useNotifications({
+    events,
+    myPlayer,
+    matchPhase,
+    muted: settings.muteNotifications,
+  });
 
   // Build chat log from incoming match events
   useEffect(() => {
@@ -661,6 +670,9 @@ export default function ArenaPage() {
               theme={theme}
               toggleTheme={toggleTheme}
               onLeave={handleLeave}
+              settings={settings}
+              updateSettings={updateSettings}
+              resetSettings={resetSettings}
             />
           </div>
         )}
@@ -741,6 +753,9 @@ export default function ArenaPage() {
             theme={theme}
             toggleTheme={toggleTheme}
             onLeave={handleLeave}
+            settings={settings}
+            updateSettings={updateSettings}
+            resetSettings={resetSettings}
           />
         </div>
 
@@ -780,8 +795,8 @@ export default function ArenaPage() {
         ))}
       </nav>
 
-      {/* ── AI Commentary (above bottom nav on mobile) ── */}
-      <CommentaryBar commentary={commentary} />
+      {/* ── AI Commentary (hidden if user muted it in settings) ── */}
+      {!settings.muteCommentary && <CommentaryBar commentary={commentary} />}
 
       {/* ── Welcome back toast ── */}
       {welcomeBack && (
@@ -795,13 +810,15 @@ export default function ArenaPage() {
         <div key={xpPop.id} className="xp-pop">+{xpPop.diff} XP ⭐</div>
       )}
 
-      {/* ── Prediction Modal ── */}
-      <PredictionModal
-        prediction={prediction}
-        countdown={predCountdown}
-        onAnswer={sendPrediction}
-        voted={predVoted}
-      />
+      {/* ── Prediction Modal (suppressed if user muted prediction popups) ── */}
+      {!settings.mutePredictions && (
+        <PredictionModal
+          prediction={prediction}
+          countdown={predCountdown}
+          onAnswer={sendPrediction}
+          voted={predVoted}
+        />
+      )}
 
       {/* ── Profile Panel overlay (desktop only) ── */}
       {showProfile && (

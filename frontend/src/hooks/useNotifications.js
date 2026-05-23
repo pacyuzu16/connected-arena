@@ -28,7 +28,7 @@ function getLevel(score) {
 let _idSeq = 0;
 function nextId() { return ++_idSeq; }
 
-export default function useNotifications({ events, myPlayer, matchPhase }) {
+export default function useNotifications({ events, myPlayer, matchPhase, muted = false }) {
   const [permission, setPermission]   = useState("default");
   const [notifications, setNotifs]    = useState([]);
   const [unreadCount, setUnread]      = useState(0);
@@ -72,9 +72,14 @@ export default function useNotifications({ events, myPlayer, matchPhase }) {
   // ── Core: add notification ───────────────────────────────────────────────
 
   const add = useCallback((notif) => {
+    // Respect the user's "mute notifications" preference
+    if (muted) return;
+
     const item = { id: nextId(), time: Date.now(), read: false, ...notif };
     setNotifs(prev => [item, ...prev].slice(0, 60));
     setUnread(c => c + 1);
+
+    // (mute flag added to dep array further down)
 
     // Browser OS notification when tab is not visible
     if (
@@ -93,7 +98,7 @@ export default function useNotifications({ events, myPlayer, matchPhase }) {
         n.onclick = () => { window.focus(); n.close(); };
       } catch (_) {}
     }
-  }, []);
+  }, [muted]);
 
   // ── Watch: match events (goals, cards, etc.) ────────────────────────────
 

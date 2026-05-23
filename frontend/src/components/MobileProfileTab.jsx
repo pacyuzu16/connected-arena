@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { getTier } from "../utils/constants";
 import { ACHIEVEMENTS } from "./ProfilePanel";
+import SettingsPanel from "./SettingsPanel";
 
 const LEVEL_COLOR = ["", "#64748b", "#3b82f6", "#8b5cf6", "#f59e0b", "#10b981"];
 const LEVEL_THRESHOLDS = [0, 0, 100, 300, 600, 1000];
@@ -21,7 +22,7 @@ function levelProgress(score, lvl) {
   return Math.min(100, Math.max(0, Math.round(((score - base) / range) * 100)));
 }
 
-export default function MobileProfileTab({ player, recentActivity = [], avatarUrl, onAvatarChange, onNameChange, theme, toggleTheme, onLeave }) {
+export default function MobileProfileTab({ player, recentActivity = [], avatarUrl, onAvatarChange, onNameChange, theme, toggleTheme, onLeave, settings, updateSettings, resetSettings }) {
   const fileRef = useRef(null);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput]     = useState(player.name || "");
@@ -175,7 +176,14 @@ export default function MobileProfileTab({ player, recentActivity = [], avatarUr
         )}
       </div>
 
-      {/* ── Settings ── */}
+      {/* ── Settings Panel (mute toggles + language) ── */}
+      {settings && updateSettings && (
+        <div style={{ padding: "0 16px" }}>
+          <SettingsPanel settings={settings} update={updateSettings} reset={resetSettings} />
+        </div>
+      )}
+
+      {/* ── Appearance toggle ── */}
       <div className="mobile-settings-section" style={{ margin: "16px 16px 0" }}>
         <div className="mobile-settings-title">Appearance</div>
         <button className="mobile-settings-row" onClick={toggleTheme}>
