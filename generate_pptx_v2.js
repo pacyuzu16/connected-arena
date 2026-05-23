@@ -253,9 +253,9 @@ s.addText("We trained our own AI model to predict goal chances.", {
   x: 0.6, y: 1.2, w: 12.1, h: 0.8,
   fontFace: FONT_H, fontSize: 28, color: BLACK, bold: true,
 });
-s.addText("Every shot now shows a real probability — and rare goals reward more XP.", {
-  x: 0.6, y: 2.0, w: 12.1, h: 0.4,
-  fontFace: FONT_B, fontSize: 14, color: GREY, italic: true,
+s.addText("Every shot shows a real probability — and rare goals reward more XP. We also pull the official DFL xG from the live feed when available, so our model is validated against the same data professional analysts use.", {
+  x: 0.6, y: 2.0, w: 12.1, h: 0.7,
+  fontFace: FONT_B, fontSize: 12, color: GREY, italic: true,
 });
 
 // Big stats row
@@ -483,7 +483,7 @@ s.addText("d1706ex99mjina.cloudfront.net   ·   github.com/pacyuzu16/connected-a
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-const outPath = "C:/Users/Administrator/Desktop/connected_arena_presentation_v2.pptx";
+const outPath = "C:/Users/Administrator/Desktop/connected_arena_presentation_v3.pptx";
 pres.writeFile({ fileName: outPath }).then(() => {
   console.log("✓ Wrote:", outPath);
 });

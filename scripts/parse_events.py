@@ -82,6 +82,39 @@ def parse_and_load(bucket: str, region: str):
                 team   = play_elem.get("Team", "")
                 player = play_elem.get("Player", "")
 
+            # ── NEW: Extract DFL's official ML attributes (v5.1+ feed) ───────
+            # Per DFL-03-EventData-Match-Raw spec (Aug 2020): ShotAtGoal elements
+            # carry xG, DistanceToGoal, AngleToGoal, Pressure, PlayerSpeed,
+            # AmountOfDefenders, GoalDistanceGoalkeeper. We use the official
+            # DFL xG when present and fall back to our trained model otherwise.
+            shot_elem = event_elem.find(".//ShotAtGoal")
+            dfl_xg    = None
+            dfl_attrs = {}
+            if shot_elem is not None:
+                def _f(name):
+                    v = shot_elem.get(name)
+                    if v in (None, ""): return None
+                    try: return float(v)
+                    except ValueError: return None
+                def _i(name):
+                    v = shot_elem.get(name)
+                    if v in (None, ""): return None
+                    try: return int(float(v))
+                    except ValueError: return None
+
+                dfl_xg = _f("xG")
+                for k, fn in [
+                    ("distanceToGoal",        lambda: _f("DistanceToGoal")),
+                    ("angleToGoal",           lambda: _f("AngleToGoal")),
+                    ("pressure",              lambda: _f("Pressure")),
+                    ("playerSpeed",           lambda: _f("PlayerSpeed")),
+                    ("amountOfDefenders",     lambda: _i("AmountOfDefenders")),
+                    ("goalDistanceGoalkeeper",lambda: _f("GoalDistanceGoalkeeper")),
+                ]:
+                    val = fn()
+                    if val is not None:
+                        dfl_attrs[k] = val
+
             item = {
                 "matchId":        MATCH_ID,
                 "eventTime":      event_time,
@@ -96,6 +129,14 @@ def parse_and_load(bucket: str, region: str):
                 "predictionWindow": trigger_meta["window"],
                 "processed":      False,
             }
+            # Attach DFL official ML attributes when present
+            if dfl_xg is not None:
+                # DynamoDB requires Decimal for floats — convert at write time
+                from decimal import Decimal
+                item["dflXg"] = Decimal(str(round(dfl_xg, 4)))
+            for k, v in dfl_attrs.items():
+                from decimal import Decimal
+                item[k] = Decimal(str(v)) if isinstance(v, float) else v
 
             batch.put_item(Item=item)
             events_loaded += 1

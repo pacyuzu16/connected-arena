@@ -156,28 +156,47 @@ def resolve_predictions(dynamodb, event_item: dict):
     return resolved
 
 
+def _dec_to_float(v):
+    """Safely convert DynamoDB Decimal to float."""
+    if v is None: return None
+    try: return float(v)
+    except Exception: return None
+
+
 def compute_event_xg(event_item):
-    """Compute xG for shot/goal events using StatsBomb-trained model."""
-    if not XG_AVAILABLE:
-        return None
+    """
+    Return (xg_value, xg_source) for shot/goal events.
+
+    Priority:
+      1. DFL official xG from the feed (most credible — uses live tracking data)
+      2. Our trained logistic-regression model (StatsBomb, 57k shots, AUC 0.753)
+      3. None
+    """
     ev_type = event_item.get("eventType", "")
     if ev_type not in ("SHOT", "GOAL", "PENALTY"):
-        return None
+        return None, None
+
+    # 1. Prefer DFL official xG when the feed provides it
+    dfl_xg = _dec_to_float(event_item.get("dflXg"))
+    if dfl_xg is not None and 0.0 <= dfl_xg <= 1.0:
+        return round(dfl_xg, 3), "DFL Official"
+
+    # 2. Fall back to our trained ML model
+    if not XG_AVAILABLE:
+        return None, None
     try:
+        if ev_type == "PENALTY":
+            return 0.77, "Our Model"  # historical penalty conversion rate
         x = float(event_item.get("xPosition", 0))
         y = float(event_item.get("yPosition", 0))
-        # DFL positions are 0-100; penalty is a special case (~xG 0.77)
-        if ev_type == "PENALTY":
-            return 0.77  # statsbomb average for penalties
-        xg = compute_xg_from_dfl(x, y)
-        return xg
+        return compute_xg_from_dfl(x, y), "Our Model"
     except Exception:
-        return None
+        return None, None
 
 
 def invoke_broadcast(lambda_client, fn_name, event_item):
     """Async invoke BroadcastFunction."""
-    xg = compute_event_xg(event_item)
+    xg, xg_source = compute_event_xg(event_item)
 
     ev = {
         "eventId":          event_item.get("eventId", ""),
@@ -191,9 +210,19 @@ def invoke_broadcast(lambda_client, fn_name, event_item):
         "yPosition":        event_item.get("yPosition", "0"),
     }
     if xg is not None:
-        ev["xg"]          = xg
-        ev["xgLabel"]     = xg_label(xg)
+        ev["xg"]           = xg
+        ev["xgSource"]     = xg_source
+        ev["xgLabel"]      = xg_label(xg)
         ev["xgMultiplier"] = xg_xp_multiplier(xg)
+
+    # Pass through extra DFL tracking attributes when available — these enable
+    # richer prediction-window context and AI commentary for stats-nerd fans.
+    for k in ("distanceToGoal","angleToGoal","pressure","playerSpeed",
+              "amountOfDefenders","goalDistanceGoalkeeper"):
+        v = _dec_to_float(event_item.get(k)) if k != "amountOfDefenders" \
+            else event_item.get(k)
+        if v is not None:
+            ev[k] = v
 
     payload = {
         "event":       ev,
@@ -215,9 +244,10 @@ def invoke_commentary(lambda_client, fn_name, event_item):
         "wsEndpoint": WS_ENDPOINT,
     }
     # Pass xG so commentary can reference it (especially for stats_nerd persona)
-    xg = compute_event_xg(event_item)
+    xg, xg_source = compute_event_xg(event_item)
     if xg is not None:
-        payload["xg"] = xg
+        payload["xg"]       = xg
+        payload["xgSource"] = xg_source
     lambda_client.invoke(
         FunctionName=fn_name,
         InvocationType="Event",

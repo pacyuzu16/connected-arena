@@ -147,6 +147,7 @@ export default function useWebSocket(playerName) {
         points:       event.pointsAvailable,
         total:        event.predictionWindow,
         xg:           event.xg           ?? null,
+        xgSource:     event.xgSource     ?? null,
         xgLabel:      event.xgLabel      ?? null,
         xgMultiplier: event.xgMultiplier ?? 1,
       });

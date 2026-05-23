@@ -100,7 +100,12 @@ export default function PredictionModal({ prediction, countdown, onAnswer, voted
         {prediction.xg != null && (
           <div className="pred-xg-wrap">
             <div className="pred-xg-label">
-              <span>⚡ ML Shot Quality</span>
+              <span>
+                ⚡ Shot Quality
+                {prediction.xgSource && (
+                  <span className="pred-xg-source"> · {prediction.xgSource}</span>
+                )}
+              </span>
               <span style={{ color: prediction.xg >= 0.35 ? "#ef4444" : prediction.xg >= 0.15 ? "#f59e0b" : "#10b981" }}>
                 {prediction.xgLabel || `${Math.round(prediction.xg * 100)}% chance`}
               </span>
