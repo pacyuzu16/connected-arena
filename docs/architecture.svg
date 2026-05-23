@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <!-- Background -->
+  <rect width="900" height="620" fill="#0b1120" rx="16"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#f97316" font-size="20" font-weight="800">🏟️ Connected Arena — Architecture</text>
+  <text x="450" y="58" text-anchor="middle" fill="#94a3b8" font-size="12">AWS Sports AI Innovation Cup 2026 · eu-central-1</text>
+
+  <!-- AWS boundary -->
+  <rect x="20" y="72" width="860" height="530" fill="none" stroke="#1e3150" stroke-width="1.5" rx="12" stroke-dasharray="6,3"/>
+  <text x="36" y="90" fill="#475569" font-size="11">AWS Cloud (eu-central-1)</text>
+
+  <!-- ── Row 1: Data sources + Scheduler + Frontend ── -->
+
+  <!-- S3 XML Data -->
+  <rect x="44" y="104" width="130" height="64" fill="#131f35" stroke="#1e3150" rx="10"/>
+  <text x="109" y="128" text-anchor="middle" fill="#f59e0b" font-size="20">🪣</text>
+  <text x="109" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">S3</text>
+  <text x="109" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">Events_Anonym.xml</text>
+
+  <!-- EventBridge -->
+  <rect x="210" y="104" width="130" height="64" fill="#131f35" stroke="#1e3150" rx="10"/>
+  <text x="275" y="128" text-anchor="middle" fill="#8b5cf6" font-size="20">⏰</text>
+  <text x="275" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">EventBridge</text>
+  <text x="275" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">rate(1 minute)</text>
+
+  <!-- CloudFront + S3 Frontend -->
+  <rect x="560" y="104" width="160" height="64" fill="#131f35" stroke="#1e3150" rx="10"/>
+  <text x="640" y="128" text-anchor="middle" fill="#06b6d4" font-size="20">🌐</text>
+  <text x="640" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">CloudFront + S3</text>
+  <text x="640" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">React SPA hosting</text>
+
+  <!-- React Fan -->
+  <rect x="750" y="104" width="120" height="64" fill="#131f35" stroke="#f97316" stroke-width="1.5" rx="10"/>
+  <text x="810" y="128" text-anchor="middle" fill="#f97316" font-size="20">👥</text>
+  <text x="810" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">Fans</text>
+  <text x="810" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">React App</text>
+
+  <!-- ── Row 2: Lambda functions ── -->
+
+  <!-- parse_events.py -->
+  <rect x="44" y="228" width="130" height="56" fill="#131f35" stroke="#1e3150" rx="10"/>
+  <text x="109" y="252" text-anchor="middle" fill="#f1f5f9" font-size="11" font-weight="700">parse_events.py</text>
+  <text x="109" y="268" text-anchor="middle" fill="#94a3b8" font-size="10">local script</text>
+  <text x="109" y="280" text-anchor="middle" fill="#94a3b8" font-size="10">XML → DynamoDB</text>
+
+  <!-- EventEmitter Lambda -->
+  <rect x="210" y="220" width="130" height="72" fill="#1a2a44" stroke="#8b5cf6" stroke-width="1.5" rx="10"/>
+  <text x="275" y="244" text-anchor="middle" fill="#8b5cf6" font-size="11" font-weight="700">λ EventEmitter</text>
+  <text x="275" y="260" text-anchor="middle" fill="#94a3b8" font-size="10">reads MatchEvents</text>
+  <text x="275" y="274" text-anchor="middle" fill="#94a3b8" font-size="10">scores predictions</text>
+  <text x="275" y="288" text-anchor="middle" fill="#94a3b8" font-size="10">invokes Broadcast</text>
+
+  <!-- Broadcast Lambda -->
+  <rect x="380" y="220" width="130" height="72" fill="#1a2a44" stroke="#10b981" stroke-width="1.5" rx="10"/>
+  <text x="445" y="244" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">λ Broadcast</text>
+  <text x="445" y="260" text-anchor="middle" fill="#94a3b8" font-size="10">sends MATCH_EVENT</text>
+  <text x="445" y="274" text-anchor="middle" fill="#94a3b8" font-size="10">to all connections</text>
+  <text x="445" y="288" text-anchor="middle" fill="#94a3b8" font-size="10">cleans stale conns</text>
+
+  <!-- Bedrock Commentary Lambda -->
+  <rect x="550" y="220" width="150" height="72" fill="#1a2a44" stroke="#f97316" stroke-width="1.5" rx="10"/>
+  <text x="625" y="244" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">λ BedrockCommentary</text>
+  <text x="625" y="260" text-anchor="middle" fill="#94a3b8" font-size="10">Claude Haiku 4.5 EU</text>
+  <text x="625" y="274" text-anchor="middle" fill="#94a3b8" font-size="10">persona-aware prompts</text>
+  <text x="625" y="288" text-anchor="middle" fill="#94a3b8" font-size="10">AI_COMMENTARY msg</text>
+
+  <!-- ── Row 3: WebSocket API ── -->
+  <rect x="44" y="352" width="726" height="72" fill="#131f35" stroke="#3b82f6" stroke-width="1.5" rx="10"/>
+  <text x="407" y="376" text-anchor="middle" fill="#3b82f6" font-size="13" font-weight="700">API Gateway WebSocket API</text>
+  <text x="120" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">$connect</text>
+  <text x="240" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">$disconnect</text>
+  <text x="360" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">predict</text>
+  <text x="480" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">leaderboard</text>
+  <text x="600" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">commentary</text>
+  <text x="720" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">prod stage</text>
+
+  <!-- ── Row 4: DynamoDB ── -->
+  <rect x="44" y="484" width="726" height="72" fill="#131f35" stroke="#eab308" stroke-width="1.5" rx="10"/>
+  <text x="407" y="508" text-anchor="middle" fill="#eab308" font-size="13" font-weight="700">DynamoDB (PAY_PER_REQUEST)</text>
+  <text x="120" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">Connections</text>
+  <text x="240" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">Players</text>
+  <text x="360" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">Predictions</text>
+  <text x="480" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">MatchEvents</text>
+  <text x="600" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">GameRoom</text>
+  <text x="720" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">TTL on Connections</text>
+
+  <!-- ── Arrows ── -->
+  <!-- S3 → parse_events -->
+  <line x1="109" y1="168" x2="109" y2="228" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- EventBridge → EventEmitter -->
+  <line x1="275" y1="168" x2="275" y2="220" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- EventEmitter → Broadcast -->
+  <line x1="340" y1="256" x2="380" y2="256" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- EventEmitter → BedrockCommentary -->
+  <path d="M 340 270 Q 445 270 550 270" fill="none" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Broadcast → WebSocket API -->
+  <line x1="445" y1="292" x2="445" y2="352" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- BedrockCommentary → WebSocket API -->
+  <line x1="625" y1="292" x2="625" y2="352" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- WebSocket API → DynamoDB -->
+  <line x1="407" y1="424" x2="407" y2="484" stroke="#eab308" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Fans ↔ WebSocket API (bidirectional) -->
+  <line x1="810" y1="168" x2="810" y2="340" stroke="#f97316" stroke-width="1.5"/>
+  <line x1="810" y1="340" x2="770" y2="388" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- CloudFront → Fans -->
+  <line x1="720" y1="136" x2="750" y2="136" stroke="#06b6d4" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- EventEmitter → DynamoDB (reads MatchEvents) -->
+  <path d="M 275 292 L 275 460 L 407 460 L 407 484" fill="none" stroke="#475569" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <!-- Lambda layer badge -->
+  <rect x="44" y="580" width="200" height="24" fill="#131f35" stroke="#1e3150" rx="6"/>
+  <text x="144" y="596" text-anchor="middle" fill="#94a3b8" font-size="10">🔧 arena layer: ws · db · responses (all λ)</text>
+</svg>

@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"app\\\\page.js -> ../components/AuthScreen\":{\"id\":\"app\\\\page.js -> ../components/AuthScreen\",\"files\":[\"static/chunks/_app-pages-browser_src_components_AuthScreen_jsx.js\"]},\"app\\\\page.js -> ../utils/cognito\":{\"id\":\"app\\\\page.js -> ../utils/cognito\",\"files\":[\"static/chunks/_app-pages-browser_src_utils_cognito_js.js\"]}}"

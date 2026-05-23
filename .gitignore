@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+frontend/build/
+
+# SAM build artifacts
+infrastructure/.aws-sam/
+
+# Environment files (contain secrets)
+frontend/.env
+*.env.local
+*.env.*.local
+
+# AWS credentials / config
+.aws/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+frontend/output.json
