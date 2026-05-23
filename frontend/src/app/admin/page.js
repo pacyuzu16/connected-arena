@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import {
   LayoutDashboard, Users, Trophy, Activity, Shield,
   LogOut, Menu, RefreshCw, User, Wifi, WifiOff, AlertCircle,
   Search, Ban, CheckCircle2, Loader2, Cpu, Info,
   Target, Sparkles, PieChart, Zap, Monitor, ExternalLink,
+  ArrowLeft, Copy, Check, KeyRound,
 } from "lucide-react";
 import AdminCharts from "../../components/AdminCharts";
 
@@ -82,146 +84,111 @@ function MiniBar({ label, value, max, color = "var(--accent)" }) {
   );
 }
 
-// ── Admin Auth Form (sign in + sign up + email verify) ───────────────────────
-function AdminLogin({ onLogin }) {
-  const [mode, setMode]           = useState("signin"); // signin | signup | verify
-  const [email, setEmail]         = useState(ADMIN_EMAIL); // pre-fill admin email
-  const [password, setPassword]   = useState("");
-  const [code, setCode]           = useState("");
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState("");
-  const [info, setInfo]           = useState("");
+// ── Admin Auth Form — sign-in only, demo creds shown prominently ─────────────
+const ADMIN_DEMO_PASSWORD = "123456789";
 
-  const clear = () => { setError(""); setInfo(""); };
+function AdminLogin({ onLogin }) {
+  const [email, setEmail]       = useState(ADMIN_EMAIL);
+  const [password, setPassword] = useState("");
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
+  const [copied, setCopied]     = useState(false);
+
+  function fillDemo() {
+    setEmail(ADMIN_EMAIL);
+    setPassword(ADMIN_DEMO_PASSWORD);
+    setError("");
+  }
+
+  function copyCreds() {
+    const text = `${ADMIN_EMAIL} / ${ADMIN_DEMO_PASSWORD}`;
+    navigator.clipboard?.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }).catch(() => {});
+  }
 
   async function handleSignIn(e) {
-    e.preventDefault(); clear(); setLoading(true);
+    e.preventDefault(); setError(""); setLoading(true);
     try {
       const { signIn } = await import("../../utils/cognito");
       const result = await signIn(email, password);
-      // JWT may not include email claim — fall back to the typed email
       const effectiveEmail = result.email || email;
       if (effectiveEmail !== ADMIN_EMAIL) {
         clearCognitoSession();
-        setError("Access denied. Only admin@gmail.com can access this dashboard.");
+        setError("Access denied. Only the admin account can access this dashboard.");
       } else {
-        // Ensure email is stored even if JWT omitted it
         localStorage.setItem("arena-cognito-email", effectiveEmail);
         onLogin({ ...result, email: effectiveEmail });
       }
     } catch (err) {
-      // "User does not exist" → prompt to create account
-      if (err.message?.includes("does not exist") || err.code === "UserNotFoundException") {
-        setError("No admin account found. Use 'Create Account' below to set one up.");
-      } else {
-        setError(err.message || "Sign in failed.");
-      }
-    } finally { setLoading(false); }
-  }
-
-  async function handleSignUp(e) {
-    e.preventDefault(); clear(); setLoading(true);
-    try {
-      const { signUp } = await import("../../utils/cognito");
-      await signUp(email, password, "Admin");
-      setMode("verify");
-      setInfo(`Verification code sent to ${email}. Check your inbox.`);
-    } catch (err) {
-      if (err.message?.includes("already exists") || err.code === "UsernameExistsException") {
-        setError("Account already exists. Try signing in instead.");
-        setMode("signin");
-      } else {
-        setError(err.message || "Sign up failed.");
-      }
-    } finally { setLoading(false); }
-  }
-
-  async function handleVerify(e) {
-    e.preventDefault(); clear(); setLoading(true);
-    try {
-      const { confirmSignUp, signIn } = await import("../../utils/cognito");
-      await confirmSignUp(email, code);
-      setInfo("Email verified! Signing you in…");
-      const result = await signIn(email, password);
-      onLogin(result);
-    } catch (err) {
-      setError(err.message || "Verification failed. Check the code and try again.");
+      setError(err.message || "Sign in failed. Please try again.");
     } finally { setLoading(false); }
   }
 
   return (
-    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", padding:16 }}>
-      <div className="auth-card" style={{ maxWidth:380, width:"100%" }}>
+    <div className="auth-wrap">
+      {/* Back to home (top-left, fixed) */}
+      <Link href="/" className="auth-back-btn" aria-label="Back to home">
+        <ArrowLeft size={16} strokeWidth={1.75} />
+        <span>Back to home</span>
+      </Link>
+
+      <div className="auth-card" style={{ maxWidth: 400 }}>
+        {/* Header */}
         <div className="auth-header">
           <div className="auth-logo auth-logo-mark">CA</div>
-          <div className="auth-title">Admin Dashboard</div>
-          <div className="auth-sub">
-            {mode === "signin" && "Sign in with admin@gmail.com"}
-            {mode === "signup" && "Create your admin account"}
-            {mode === "verify" && "Verify your email"}
-          </div>
+          <div className="auth-title">Admin Console</div>
+          <div className="auth-sub">Sign in to manage Connected Arena</div>
         </div>
 
-        {/* Sign In */}
-        {mode === "signin" && (
-          <form onSubmit={handleSignIn} className="auth-form">
-            <input className="auth-input" type="email" placeholder="Email"
-              value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
-            <input className="auth-input" type="password" placeholder="Password"
-              value={password} onChange={e => setPassword(e.target.value)} required />
-            {error && <div className="auth-error">{error}</div>}
-            {info  && <div className="auth-info">{info}</div>}
-            <button className="auth-submit-btn" type="submit" disabled={loading}>
-              {loading ? "Signing in…" : "Sign In"}
+        {/* Demo credentials banner — prominent, copy-friendly */}
+        <div className="auth-demo-banner">
+          <div className="auth-demo-banner-hdr">
+            <KeyRound size={13} strokeWidth={1.75} />
+            <span>Demo credentials</span>
+            <button
+              type="button"
+              className="auth-demo-copy"
+              onClick={copyCreds}
+              title="Copy email and password"
+              aria-label="Copy demo credentials"
+            >
+              {copied
+                ? <><Check size={12} strokeWidth={2.5} /> Copied</>
+                : <><Copy size={12} strokeWidth={1.75} /> Copy</>}
             </button>
-            <button type="button" className="auth-switch-btn"
-              onClick={() => { clear(); setMode("signup"); }}>
-              First time? Create admin account →
-            </button>
-          </form>
-        )}
+          </div>
+          <div className="auth-demo-row">
+            <span className="auth-demo-label">Email</span>
+            <code>{ADMIN_EMAIL}</code>
+          </div>
+          <div className="auth-demo-row">
+            <span className="auth-demo-label">Password</span>
+            <code>{ADMIN_DEMO_PASSWORD}</code>
+          </div>
+          <button type="button" className="auth-demo-fill" onClick={fillDemo}>
+            Use these credentials →
+          </button>
+        </div>
 
-        {/* Sign Up */}
-        {mode === "signup" && (
-          <form onSubmit={handleSignUp} className="auth-form">
-            <input className="auth-input" type="email" placeholder="Admin email"
-              value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
-            <input className="auth-input" type="password" placeholder="Password (min 8 chars)"
-              value={password} onChange={e => setPassword(e.target.value)} required minLength={8} />
-            {error && <div className="auth-error">{error}</div>}
-            {info  && <div className="auth-info">{info}</div>}
-            <button className="auth-submit-btn" type="submit" disabled={loading}>
-              {loading ? "Creating account…" : "Create Account"}
-            </button>
-            <button type="button" className="auth-switch-btn"
-              onClick={() => { clear(); setMode("signin"); }}>
-              ← Back to sign in
-            </button>
-          </form>
-        )}
-
-        {/* Email Verify */}
-        {mode === "verify" && (
-          <form onSubmit={handleVerify} className="auth-form">
-            <div className="auth-verify-hint">
-              A 6-digit code was sent to <strong>{email}</strong>
-            </div>
-            <input className="auth-input auth-code-input" type="text"
-              placeholder="000000" maxLength={6}
-              value={code} onChange={e => setCode(e.target.value.replace(/\D/g,""))}
-              autoFocus />
-            {error && <div className="auth-error">{error}</div>}
-            {info  && <div className="auth-info">{info}</div>}
-            <button className="auth-submit-btn" type="submit"
-              disabled={loading || code.length < 6}>
-              {loading ? "Verifying…" : "Verify & Sign In"}
-            </button>
-            <button type="button" className="auth-switch-btn"
-              onClick={() => { clear(); setMode("signup"); }}>
-              ← Back
-            </button>
-          </form>
-        )}
+        {/* Sign In form */}
+        <form onSubmit={handleSignIn} className="auth-form">
+          <input
+            className="auth-input" type="email" placeholder="Email"
+            value={email} onChange={e => setEmail(e.target.value)}
+            required autoFocus
+          />
+          <input
+            className="auth-input" type="password" placeholder="Password"
+            value={password} onChange={e => setPassword(e.target.value)}
+            required
+          />
+          {error && <div className="auth-error">{error}</div>}
+          <button className="auth-submit-btn" type="submit" disabled={loading}>
+            {loading ? "Signing in…" : "Sign In"}
+          </button>
+        </form>
       </div>
     </div>
   );

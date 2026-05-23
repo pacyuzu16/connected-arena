@@ -7993,3 +7993,144 @@ button:disabled,
   .stadium-brand-sub     { font-size: 8px; }
   .stadium-live, .stadium-fans { font-size: 10px; padding: 4px 8px; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AUTH SCREEN EXTRAS — back button + demo credentials banner
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Wrap is now relatively positioned so the back button can sit inside it */
+.auth-wrap {
+  position: relative;
+}
+
+/* Back to home — sits in the top-left corner */
+.auth-back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-2);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  box-shadow: var(--shadow-xs);
+  transition: all var(--t);
+  z-index: 10;
+}
+.auth-back-btn:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--surface2);
+  transform: translateX(-2px);
+}
+@media (max-width: 540px) {
+  .auth-back-btn {
+    top: max(16px, env(safe-area-inset-top));
+    left: 16px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .auth-back-btn span { display: none; }
+  .auth-back-btn { padding: 9px; border-radius: 999px; }
+}
+
+/* Demo credentials banner inside the auth card */
+.auth-demo-banner {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 14px;
+  margin: 16px 0;
+  text-align: left;
+}
+.auth-demo-banner-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-2);
+  margin-bottom: 10px;
+}
+.auth-demo-banner-hdr svg { color: var(--accent); }
+
+.auth-demo-copy {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  transition: all var(--t);
+}
+.auth-demo-copy:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.auth-demo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.auth-demo-row:last-of-type { border-bottom: none; }
+
+.auth-demo-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.auth-demo-row code {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  padding: 0;
+}
+
+.auth-demo-fill {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: all var(--t);
+  box-shadow: var(--shadow-xs);
+}
+.auth-demo-fill:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm), 0 0 0 4px var(--accent-ring);
+}

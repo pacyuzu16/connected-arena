@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { signIn, signUp, confirmSignUp } from "../utils/cognito";
 
 /**
@@ -66,6 +68,12 @@ export default function AuthScreen({ onAuth, onGuest }) {
 
   return (
     <div className="auth-wrap">
+      {/* Back to home (top-left, fixed) */}
+      <Link href="/" className="auth-back-btn" aria-label="Back to home">
+        <ArrowLeft size={16} strokeWidth={1.75} />
+        <span>Back to home</span>
+      </Link>
+
       <div className="auth-card">
 
         {/* Header */}
