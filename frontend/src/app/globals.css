@@ -3829,6 +3829,132 @@ html, body {
    ADMIN DASHBOARD
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── Sidebar shell layout (Claude-style nav) ───────────────────────── */
+.admin-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.admin-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: sticky; top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.admin-sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 8px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-sidebar-brand .admin-logo { font-size: 28px; line-height: 1; }
+.admin-sidebar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.admin-sidebar-sub   { font-size: 11px; color: var(--text-3); letter-spacing: 0.04em; text-transform: uppercase; }
+
+.admin-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.admin-nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 9px; cursor: pointer;
+  color: var(--text-2); font-family: inherit; font-size: 14px;
+  text-align: left; width: 100%;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.admin-nav-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.admin-nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.admin-nav-icon  { font-size: 18px; width: 22px; text-align: center; }
+.admin-nav-label { flex: 1; }
+
+.admin-sidebar-footer {
+  display: flex; flex-direction: column; gap: 8px;
+  padding-top: 12px; border-top: 1px solid var(--border);
+}
+.admin-sidebar-user {
+  font-size: 11px;
+  background: var(--surface2);
+  padding: 8px 10px; border-radius: 8px;
+  word-break: break-all;
+}
+.admin-sidebar-signout {
+  width: 100%; padding: 9px 12px;
+  font-size: 13px; font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Backdrop for mobile drawer */
+.admin-sidebar-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 60;
+  display: none;
+}
+
+/* Main area */
+.admin-main {
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.admin-topbar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.admin-burger {
+  display: none;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  padding: 6px 10px; font-size: 18px;
+  color: var(--text);
+}
+.admin-topbar-title {
+  flex: 1;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 700; color: var(--text);
+}
+.admin-topbar-icon { font-size: 20px; }
+.admin-topbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* Two-column grid used by Match Status view */
+.admin-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ── Responsive: collapse sidebar to drawer below 900px ─────────────── */
+@media (max-width: 900px) {
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-sidebar {
+    position: fixed; left: 0; top: 0;
+    width: 260px; height: 100vh;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+  }
+  .admin-sidebar.open { transform: translateX(0); }
+  .admin-sidebar-backdrop { display: block; }
+  .admin-burger { display: inline-flex; align-items: center; }
+  .admin-grid-2 { grid-template-columns: 1fr; }
+}
+
 .admin-page {
   min-height: 100vh;
   background: var(--bg);

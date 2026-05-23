@@ -223,6 +223,8 @@ function AdminLogin({ onLogin }) {
 // ── Main Admin Dashboard ─────────────────────────────────────────────────────
 export default function AdminPage() {
   const [adminUser, setAdminUser]   = useState(null);  // null = checking, false = not authed
+  const [view,      setView]        = useState("overview"); // sidebar section
+  const [sidebarOpen, setSidebarOpen] = useState(false);   // mobile drawer state
   const [players,   setPlayers]     = useState([]);
   const [allUsers,  setAllUsers]    = useState([]);   // full list with suspended flag
   const [userSearch,setUserSearch]  = useState("");
@@ -348,38 +350,87 @@ export default function AdminPage() {
     u.playerId.toLowerCase().includes(userSearch.toLowerCase())
   );
 
+  // Navigation items for the sidebar
+  const NAV = [
+    { id: "overview",   icon: "📊", label: "Overview"      },
+    { id: "users",      icon: "👥", label: "User Management" },
+    { id: "leaderboard",icon: "🏆", label: "Leaderboard"   },
+    { id: "match",      icon: "⚽", label: "Match Status"  },
+    { id: "auth",       icon: "🔐", label: "Identity & Auth" },
+  ];
+  const currentNav = NAV.find(n => n.id === view) || NAV[0];
+
   return (
-    <div className="admin-page">
+    <div className="admin-shell">
 
-      {/* ── Header ── */}
-      <header className="admin-hdr">
-        <div className="admin-hdr-left">
+      {/* ── Sidebar (collapsible on mobile) ── */}
+      <aside className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}>
+        <div className="admin-sidebar-brand">
           <span className="admin-logo">🏟️</span>
-          <span className="admin-title">Connected Arena</span>
-          <span className="admin-subtitle">Admin Dashboard</span>
-        </div>
-        <div className="admin-hdr-right">
-          <div className={`admin-ws-status ${isConn ? "connected" : wsStatus==="connecting" ? "connecting" : "disconnected"}`}>
-            <span className="admin-ws-dot" />
-            {isConn ? "WebSocket Live" : wsStatus==="connecting" ? "Connecting…" : wsStatus==="error" ? "Error" : "Disconnected"}
+          <div>
+            <div className="admin-sidebar-title">Connected Arena</div>
+            <div className="admin-sidebar-sub">Admin Console</div>
           </div>
-          {!isConn && wsStatus !== "connecting" && (
-            <button className="admin-reconnect-btn" onClick={connect}>
-              {wsStatus === "error" ? "Retry" : "Connect"}
-            </button>
-          )}
-          <span className="admin-user-pill">👤 {adminUser.email}</span>
-          <button className="admin-signout-btn" onClick={signOutAdmin}>Sign Out</button>
         </div>
-      </header>
 
-      {wsStatus === "error" && wsError && (
-        <div className="admin-error-banner">
-          <strong>⚠️ WebSocket Error:</strong> {wsError}
+        <nav className="admin-nav">
+          {NAV.map(n => (
+            <button
+              key={n.id}
+              className={`admin-nav-item ${view === n.id ? "active" : ""}`}
+              onClick={() => { setView(n.id); setSidebarOpen(false); }}
+            >
+              <span className="admin-nav-icon">{n.icon}</span>
+              <span className="admin-nav-label">{n.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="admin-sidebar-footer">
+          <div className="admin-user-pill admin-sidebar-user">👤 {adminUser.email}</div>
+          <button className="admin-signout-btn admin-sidebar-signout" onClick={signOutAdmin}>
+            ⎋ Sign Out
+          </button>
         </div>
+      </aside>
+
+      {sidebarOpen && (
+        <div className="admin-sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
       )}
 
+      {/* ── Main content area ── */}
+      <main className="admin-main">
+
+        {/* Top bar */}
+        <header className="admin-topbar">
+          <button className="admin-burger" onClick={() => setSidebarOpen(o => !o)}>☰</button>
+          <div className="admin-topbar-title">
+            <span className="admin-topbar-icon">{currentNav.icon}</span>
+            {currentNav.label}
+          </div>
+          <div className="admin-topbar-right">
+            <div className={`admin-ws-status ${isConn ? "connected" : wsStatus==="connecting" ? "connecting" : "disconnected"}`}>
+              <span className="admin-ws-dot" />
+              {isConn ? "Live" : wsStatus==="connecting" ? "Connecting…" : wsStatus==="error" ? "Error" : "Offline"}
+            </div>
+            {!isConn && wsStatus !== "connecting" && (
+              <button className="admin-reconnect-btn" onClick={connect}>
+                {wsStatus === "error" ? "Retry" : "Connect"}
+              </button>
+            )}
+          </div>
+        </header>
+
+        {wsStatus === "error" && wsError && (
+          <div className="admin-error-banner">
+            <strong>⚠️ WebSocket Error:</strong> {wsError}
+          </div>
+        )}
+
       <div className="admin-body">
+
+        {/* ============ OVERVIEW ============ */}
+        {view === "overview" && (<>
 
         {/* ── KPI row ── */}
         <div className="admin-kpi-row">
@@ -399,8 +450,41 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* ── Three columns ── */}
-        <div className="admin-grid-3">
+        {/* ── ML Insights (overview) ── */}
+        <div className="admin-card admin-insights-card">
+          <div className="admin-card-hdr">🤖 ML-Powered Insights &amp; Recommendations</div>
+          <div className="admin-insights-grid">
+            {insights.map((ins, i) => (
+              <div key={i} className={`admin-insight admin-insight-${ins.type}`}>
+                <div className="admin-insight-icon">{ins.icon}</div>
+                <div>
+                  <div className="admin-insight-title">{ins.title}</div>
+                  <div className="admin-insight-body">{ins.body}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Debug Info (overview footer) ── */}
+        <div className="admin-card">
+          <div className="admin-card-hdr">🔧 System Info</div>
+          <div style={{ padding:"14px 18px", fontSize:12, color:"var(--text-2)", lineHeight:2 }}>
+            <div><strong>WS endpoint:</strong> {WS_URL || <span style={{color:"#ef4444"}}>NOT SET — check .env.local</span>}</div>
+            <div><strong>Status:</strong> {wsStatus}</div>
+            <div><strong>Players in DB:</strong> {players.length}</div>
+            <div><strong>Events this session:</strong> {eventCount}</div>
+            <div><strong>Admin:</strong> {adminUser.email}</div>
+          </div>
+        </div>
+
+        </>)}
+        {/* ============ END OVERVIEW ============ */}
+
+
+        {/* ============ MATCH STATUS ============ */}
+        {view === "match" && (
+        <div className="admin-grid-2">
 
           {/* Match Status */}
           <div className="admin-card">
@@ -425,32 +509,6 @@ export default function AdminPage() {
             }
           </div>
 
-          {/* Leaderboard */}
-          <div className="admin-card">
-            <div className="admin-card-hdr">🏆 Live Leaderboard</div>
-            {players.length === 0
-              ? <div className="admin-empty">{isConn ? "No players yet" : "Connect to see live data"}</div>
-              : (
-                <div className="admin-lb">
-                  <div className="admin-lb-hdr">
-                    <span>#</span><span style={{flex:1}}>Player</span><span>Acc</span><span>XP</span>
-                  </div>
-                  {players.slice(0,12).map((p, i) => (
-                    <div key={p.name} className="admin-lb-row">
-                      <span className="admin-lb-rank">{i+1}</span>
-                      <div className="admin-lb-info">
-                        <span className="admin-lb-name">{p.name}</span>
-                        {(p.winStreak||0)>=3 && <span className="admin-lb-streak">🔥{p.winStreak}</span>}
-                      </div>
-                      <span className="admin-lb-acc">{p.accuracy||0}%</span>
-                      <span className="admin-lb-xp">⭐{p.score||0}</span>
-                    </div>
-                  ))}
-                </div>
-              )
-            }
-          </div>
-
           {/* Activity Log */}
           <div className="admin-card">
             <div className="admin-card-hdr">📋 Live Activity Log</div>
@@ -469,24 +527,42 @@ export default function AdminPage() {
             }
           </div>
         </div>
+        )}
+        {/* ============ END MATCH STATUS ============ */}
 
-        {/* ── ML Insights ── */}
-        <div className="admin-card admin-insights-card">
-          <div className="admin-card-hdr">🤖 ML-Powered Insights &amp; Recommendations</div>
-          <div className="admin-insights-grid">
-            {insights.map((ins, i) => (
-              <div key={i} className={`admin-insight admin-insight-${ins.type}`}>
-                <div className="admin-insight-icon">{ins.icon}</div>
-                <div>
-                  <div className="admin-insight-title">{ins.title}</div>
-                  <div className="admin-insight-body">{ins.body}</div>
+
+        {/* ============ LEADERBOARD ============ */}
+        {view === "leaderboard" && (
+        <div className="admin-card">
+          <div className="admin-card-hdr">🏆 Live Leaderboard</div>
+          {players.length === 0
+            ? <div className="admin-empty">{isConn ? "No players yet" : "Connect to see live data"}</div>
+            : (
+              <div className="admin-lb">
+                <div className="admin-lb-hdr">
+                  <span>#</span><span style={{flex:1}}>Player</span><span>Acc</span><span>XP</span>
                 </div>
+                {players.slice(0, 50).map((p, i) => (
+                  <div key={p.playerId || p.name} className="admin-lb-row">
+                    <span className="admin-lb-rank">{i+1}</span>
+                    <div className="admin-lb-info">
+                      <span className="admin-lb-name">{p.name}</span>
+                      {(p.winStreak||0)>=3 && <span className="admin-lb-streak">🔥{p.winStreak}</span>}
+                    </div>
+                    <span className="admin-lb-acc">{p.accuracy||0}%</span>
+                    <span className="admin-lb-xp">⭐{p.score||0}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            )
+          }
         </div>
+        )}
+        {/* ============ END LEADERBOARD ============ */}
 
-        {/* ── Identity & Auth Status ── */}
+
+        {/* ============ IDENTITY & AUTH ============ */}
+        {view === "auth" && (
         <div className="admin-card">
           <div className="admin-card-hdr">🔐 Identity &amp; Auth Strategy</div>
           <div className="admin-auth-grid">
@@ -527,8 +603,12 @@ export default function AdminPage() {
             </div>
           </div>
         </div>
+        )}
+        {/* ============ END IDENTITY & AUTH ============ */}
 
-        {/* ── User Management ── */}
+
+        {/* ============ USER MANAGEMENT ============ */}
+        {view === "users" && (
         <div className="admin-card">
           <div className="admin-card-hdr" style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
             <span>👥 User Management</span>
@@ -599,20 +679,11 @@ export default function AdminPage() {
             </div>
           )}
         </div>
-
-        {/* ── Debug ── */}
-        <div className="admin-card">
-          <div className="admin-card-hdr">🔧 Debug Info</div>
-          <div style={{ padding:"14px 18px", fontSize:12, color:"var(--text-2)", lineHeight:2 }}>
-            <div><strong>WS endpoint:</strong> {WS_URL || <span style={{color:"#ef4444"}}>NOT SET — check .env.local</span>}</div>
-            <div><strong>Status:</strong> {wsStatus}</div>
-            <div><strong>Players in DB:</strong> {players.length}</div>
-            <div><strong>Events this session:</strong> {eventCount}</div>
-            <div><strong>Admin:</strong> {adminUser.email}</div>
-          </div>
-        </div>
+        )}
+        {/* ============ END USER MANAGEMENT ============ */}
 
       </div>
+      </main>
     </div>
   );
 }
