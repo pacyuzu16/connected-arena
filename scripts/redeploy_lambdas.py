@@ -9,9 +9,10 @@ BASE   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 lam    = boto3.client("lambda", region_name=REGION)
 
 TARGETS = [
-    ("connected-arena-ConnectFunction-awNwDl8qumo5", "connect"),
-    ("connected-arena-ChatFunction",                 "chat"),
-    ("connected-arena-AdminActionFunction",          "admin_action"),
+    ("connected-arena-ConnectFunction-awNwDl8qumo5",        "connect"),
+    ("connected-arena-ChatFunction",                        "chat"),
+    ("connected-arena-AdminActionFunction",                 "admin_action"),
+    ("connected-arena-LeaderboardFunction-QbaN0npDCkUD",    "leaderboard"),
 ]
 
 def zip_handler(path):
