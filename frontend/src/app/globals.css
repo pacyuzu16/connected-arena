@@ -1,22 +1,60 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM — Connected Arena
+   Refined neutral palette · Inter typeface · Layered shadows · 4-pt grid
+   ═══════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --accent:     #f97316;
-  --accent-dim: rgba(249,115,22,0.14);
-  --green:      #10b981;
-  --red:        #ef4444;
-  --radius:     14px;
-  --radius-sm:  8px;
-  --shadow-lg:  0 8px 48px rgba(0,0,0,0.2);
-  --t:          0.18s ease;
+  /* Brand accent — refined deep orange (less candy, more confident) */
+  --accent:        #ea580c;
+  --accent-hover:  #c2410c;
+  --accent-dim:    rgba(234, 88, 12, 0.10);
+  --accent-ring:   rgba(234, 88, 12, 0.22);
+
+  /* Semantic */
+  --green:  #059669;
+  --red:    #dc2626;
+  --amber:  #d97706;
+  --blue:   #2563eb;
+
+  /* Radii — tighter, more consistent */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --radius:    var(--r-lg);     /* back-compat alias */
+  --radius-sm: var(--r-sm);     /* back-compat alias */
+
+  /* Shadows — layered, subtle, premium feel */
+  --shadow-xs:  0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm:  0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md:  0 4px 8px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg:  0 12px 24px -6px rgba(15, 23, 42, 0.10), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+  --shadow-xl:  0 24px 48px -12px rgba(15, 23, 42, 0.14);
+
+  /* Motion */
+  --t:       180ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast:  120ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-slow:  300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Spacing scale (4-pt grid) — for future use; existing values still work */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 20px;  --s-6: 24px;  --s-8: 32px;  --s-10: 40px;
+  --s-12: 48px; --s-16: 64px;
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* ───────────────────────── Light theme ───────────────────────── */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --bg:        #f1f5f9;
+    --bg:        #f8fafc;
     --surface:   #ffffff;
-    --surface2:  #f8fafc;
+    --surface2:  #f1f5f9;
     --border:    #e2e8f0;
+    --border-strong: #cbd5e1;
     --text:      #0f172a;
     --text-2:    #475569;
     --text-3:    #94a3b8;
@@ -25,46 +63,109 @@
 }
 
 :root[data-theme="light"] {
-  --bg:        #f1f5f9;
+  --bg:        #f8fafc;
   --surface:   #ffffff;
-  --surface2:  #f8fafc;
+  --surface2:  #f1f5f9;
   --border:    #e2e8f0;
+  --border-strong: #cbd5e1;
   --text:      #0f172a;
   --text-2:    #475569;
   --text-3:    #94a3b8;
   --hdr:       #ffffff;
 }
 
+/* ───────────────────────── Dark theme ────────────────────────── */
+/* Refined: warmer near-black, subtle blue-grey surfaces, less saturation */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:        #060d1a;
-    --surface:   #0b1829;
-    --surface2:  #101f36;
-    --border:    #1b2e4d;
-    --text:      #ddeeff;
-    --text-2:    #7a9bcc;
-    --text-3:    #3d5a82;
-    --hdr:       #050e1c;
+    --bg:        #0a0f1a;
+    --surface:   #111827;
+    --surface2:  #1a2233;
+    --border:    #1f2a3d;
+    --border-strong: #2d3a52;
+    --text:      #f1f5f9;
+    --text-2:    #94a3b8;
+    --text-3:    #64748b;
+    --hdr:       #0a0f1a;
+    --accent-dim:  rgba(234, 88, 12, 0.16);
+
+    --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.30), 0 1px 2px rgba(0, 0, 0, 0.20);
+    --shadow-md:  0 4px 8px -2px rgba(0, 0, 0, 0.35), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
+    --shadow-lg:  0 12px 24px -6px rgba(0, 0, 0, 0.45), 0 4px 8px -2px rgba(0, 0, 0, 0.30);
+    --shadow-xl:  0 24px 48px -12px rgba(0, 0, 0, 0.60);
   }
 }
 
 :root[data-theme="dark"] {
-  --bg:        #060d1a;
-  --surface:   #0b1829;
-  --surface2:  #101f36;
-  --border:    #1b2e4d;
-  --text:      #ddeeff;
-  --text-2:    #7a9bcc;
-  --text-3:    #3d5a82;
-  --hdr:       #050e1c;
+  --bg:        #0a0f1a;
+  --surface:   #111827;
+  --surface2:  #1a2233;
+  --border:    #1f2a3d;
+  --border-strong: #2d3a52;
+  --text:      #f1f5f9;
+  --text-2:    #94a3b8;
+  --text-3:    #64748b;
+  --hdr:       #0a0f1a;
+  --accent-dim:  rgba(234, 88, 12, 0.16);
+
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.30), 0 1px 2px rgba(0, 0, 0, 0.20);
+  --shadow-md:  0 4px 8px -2px rgba(0, 0, 0, 0.35), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
+  --shadow-lg:  0 12px 24px -6px rgba(0, 0, 0, 0.45), 0 4px 8px -2px rgba(0, 0, 0, 0.30);
+  --shadow-xl:  0 24px 48px -12px rgba(0, 0, 0, 0.60);
 }
 
+/* ───────────────────────── Global base styles ──────────────────────── */
 html, body {
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11"; /* Inter stylistic alts */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   min-height: 100vh;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.011em;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+  font-feature-settings: inherit;
+}
+
+::selection {
+  background: var(--accent-ring);
+  color: var(--text);
+}
+
+/* Modern focus outline — visible but never harsh */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar polish */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
 
 /* ── Join ── */
 .join-wrap {
@@ -5101,3 +5202,249 @@ html, body {
   .stadium-commentary { left: 12px; right: 12px; bottom: 44px; }
   .stadium-commentary-text { font-size: 14px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN REFRESH — Component polish layer (added 2026-05-23)
+   Refines existing components without breaking their class names.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Subtle, premium card surfaces — applies on top of existing rules ── */
+.admin-card,
+.dpp-card,
+.profile-card,
+.kpi-card,
+.settings-panel,
+.auth-card {
+  box-shadow: var(--shadow-sm) !important;
+  border-radius: var(--r-lg) !important;
+  transition: box-shadow var(--t), border-color var(--t);
+}
+.admin-card:hover {
+  border-color: var(--border-strong) !important;
+}
+
+/* ── Refined button system ── */
+.admin-reconnect-btn,
+.admin-signout-btn,
+.auth-submit-btn,
+.auth-switch-btn,
+.join-btn,
+.profile-btn,
+.admin-suspend-btn {
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  border-radius: var(--r-md) !important;
+  transition: all var(--t) !important;
+  box-shadow: var(--shadow-xs);
+}
+
+.auth-submit-btn,
+.join-btn {
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-submit-btn:hover:not(:disabled),
+.join-btn:hover:not(:disabled) {
+  background: var(--accent-hover) !important;
+  box-shadow: var(--shadow-md), 0 0 0 4px var(--accent-ring) !important;
+  transform: translateY(-1px);
+}
+
+/* ── Cleaner inputs — Inter font, refined focus ring ── */
+.auth-input,
+.f-input,
+.ct-input {
+  font-family: var(--font-sans) !important;
+  font-size: 14px !important;
+  letter-spacing: -0.005em !important;
+  border-radius: var(--r-md) !important;
+  transition: border-color var(--t), box-shadow var(--t) !important;
+}
+.auth-input:focus,
+.f-input:focus,
+.ct-input:focus {
+  outline: none !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 4px var(--accent-ring) !important;
+}
+
+/* ── Premium sidebar nav (admin) — quieter, more refined ── */
+.admin-sidebar {
+  box-shadow: var(--shadow-xs);
+}
+.admin-nav-item {
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  font-size: 14px !important;
+  transition: all var(--t) !important;
+}
+.admin-nav-item.active {
+  background: var(--surface2) !important;
+  color: var(--text) !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+  position: relative;
+}
+.admin-nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: -14px; top: 8px; bottom: 8px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── Top bar (admin) — quieter chrome ── */
+.admin-topbar {
+  box-shadow: var(--shadow-xs);
+  backdrop-filter: saturate(140%);
+}
+.admin-topbar-title {
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+.admin-topbar-icon { font-size: 18px; opacity: 0.85; }
+
+/* ── KPI cards — refined, less rainbow ── */
+.admin-kpi-card {
+  box-shadow: var(--shadow-xs) !important;
+  border-radius: var(--r-lg) !important;
+  transition: transform var(--t), box-shadow var(--t), border-color var(--t) !important;
+}
+.admin-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--border-strong) !important;
+}
+.admin-kpi-val {
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  font-variant-numeric: tabular-nums;
+}
+.admin-kpi-lbl {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--text-3) !important;
+}
+
+/* ── Tables — tabular numerics + tighter typography ── */
+.admin-user-table {
+  font-size: 13px !important;
+}
+.admin-user-table th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--text-3) !important;
+}
+.admin-user-table td {
+  font-variant-numeric: tabular-nums;
+  padding: 10px 12px !important;
+}
+
+/* ── Status pills — refined ── */
+.admin-status-pill {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  padding: 3px 9px !important;
+  border-radius: 999px !important;
+}
+
+/* ── User pill (sidebar / header) — quieter look ── */
+.admin-user-pill {
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--text-2) !important;
+}
+
+/* ── Tabs (fan arena) — modern underline + smooth transition ── */
+.tab-btn {
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  transition: color var(--t) !important;
+}
+.tab-btn.active {
+  font-weight: 600 !important;
+}
+
+/* ── Settings panel — tighten the type and toggle look ── */
+.settings-hdr {
+  letter-spacing: -0.015em !important;
+}
+.settings-row {
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  transition: all var(--t) !important;
+  box-shadow: var(--shadow-xs);
+}
+.settings-row:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-strong) !important;
+}
+.settings-toggle {
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+  transition: background var(--t-slow) !important;
+}
+.settings-toggle.on { background: var(--green) !important; }
+.settings-toggle-dot {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 1px rgba(0,0,0,0.1) !important;
+  transition: transform var(--t) !important;
+}
+
+/* ── Lighten the chat input area ── */
+.ct-form {
+  background: var(--surface) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.ct-send {
+  border-radius: var(--r-md) !important;
+  transition: all var(--t) !important;
+  box-shadow: var(--shadow-xs);
+}
+.ct-send:not(:disabled):hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Reduce emoji prominence in titles by softening line-height ── */
+.admin-card-hdr,
+.dpp-card-hdr,
+.settings-hdr {
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+  font-size: 14px !important;
+}
+
+/* ── Match score numerics ── */
+.admin-match-num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* ── Leaderboard numerics ── */
+.admin-lb-acc, .admin-lb-xp, .admin-lb-rank {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500 !important;
+}
+
+/* ── Refined disabled state ── */
+button:disabled,
+.auth-submit-btn:disabled,
+.join-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
