@@ -38,14 +38,14 @@ A full-screen, high-contrast interface designed for jumbotrons, LED boards, and 
 
 **Use case:** A sports bar projects `/stadium` on their TV. Fans at the bar scan the QR code, make predictions on their phones, and see the crowd vote shift on the big screen in real time.
 
-### 2.3 Watch Party Mode (BUILT — Watch Tab)
+### 2.3 Live Chat (BUILT — Chat Tab)
 
-The in-app companion for group viewing:
-- Fan count (scaled to show community size)
-- Shared prediction challenge with live crowd vote bars
-- Top fan rankings
-- QR code for easy sharing
-- Crowd reaction animations
+Real-time fan-to-fan communication during the match:
+- YouTube-style scrolling chat feed
+- Emoji reactions and fan banter
+- XP rewards for active participation (+5 XP every 5 messages)
+- Broadcasts to all connected fans via WebSocket
+- Moderation via admin suspend/unsuspend
 
 ### 2.4 AR In-Stadium Experience (CONCEPT)
 
@@ -175,4 +175,4 @@ Every touchpoint resolves to the same `playerId` in DynamoDB. XP earned on the w
 
 ## 6. Summary
 
-Connected Arena today is a fully functional real-time multiplayer platform with mobile, stadium screen, and watch party modes. Our north star extends this into AR stadium experiences, wearable companions, and a persistent cross-device identity — transforming every fan moment into a connected, rewarding experience that extends far beyond the 90 minutes.
+Connected Arena today is a fully functional real-time multiplayer platform with mobile, stadium screen, and live chat modes. Our north star extends this into AR stadium experiences, wearable companions, and a persistent cross-device identity — transforming every fan moment into a connected, rewarding experience that extends far beyond the 90 minutes.

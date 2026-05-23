@@ -243,9 +243,9 @@ function awsBox(s, x, y, w, h, label, sub) {
       items: ["/stadium big-screen mode", "Giant scoreboard + feed", "Live crowd vote bars", "QR code to join", "AI commentary overlay"],
     },
     {
-      icon: "\uD83C\uDF10", label: "WATCH PARTY",
+      icon: "\uD83D\uDCAC", label: "LIVE CHAT",
       status: "BUILT",
-      items: ["Shared screen companion", "Fan count + crowd votes", "Projected leaderboard", "Group challenges", "Second-screen sync"],
+      items: ["Real-time fan chat", "Emoji reactions", "XP rewards for activity", "Broadcast to all fans", "Admin moderation"],
     },
     {
       icon: "\uD83D\uDD76\uFE0F", label: "AR IN-STADIUM",

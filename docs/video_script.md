@@ -93,7 +93,7 @@ python scripts/emit_events.py --region eu-central-1 --speedup 60
 **Action:** Open a new tab → go to https://d1706ex99mjina.cloudfront.net/stadium
 
 **Say:**
-> "This is our spatial proof-of-concept — Stadium Big Screen Mode. Designed for jumbotrons, watch parties, and projectors. It shows a giant scoreboard, live events, crowd voting percentages, and a QR code for fans to scan and join on their phones. It connects via the same WebSocket pipeline — fully live."
+> "This is our spatial proof-of-concept — Stadium Big Screen Mode. Designed for jumbotrons, sports bars, and projectors. It shows a giant scoreboard, live events, crowd voting percentages, and a QR code for fans to scan and join on their phones. It connects via the same WebSocket pipeline — fully live."
 
 **Show:** Point out the large score, event feed, prediction bars, QR code.
 
