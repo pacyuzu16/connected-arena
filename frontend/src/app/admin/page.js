@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Users, Trophy, Activity, Shield,
   LogOut, Menu, RefreshCw, User, Wifi, WifiOff, AlertCircle,
   Search, Ban, CheckCircle2, Loader2, Cpu, Info,
-  Target, Sparkles, PieChart, Zap,
+  Target, Sparkles, PieChart, Zap, Monitor, ExternalLink,
 } from "lucide-react";
 import AdminCharts from "../../components/AdminCharts";
 
@@ -394,6 +394,17 @@ export default function AdminPage() {
         </nav>
 
         <div className="admin-sidebar-footer">
+          <a
+            href="/stadium"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="admin-stadium-link"
+            title="Open Stadium / Big-Screen view in a new tab"
+          >
+            <Monitor size={14} strokeWidth={1.75} />
+            <span>Stadium View</span>
+            <ExternalLink size={11} strokeWidth={1.75} style={{ marginLeft: "auto", opacity: 0.6 }} />
+          </a>
           <div className="admin-user-pill admin-sidebar-user">
             <User size={13} strokeWidth={1.75} />
             <span>{adminUser.email}</span>

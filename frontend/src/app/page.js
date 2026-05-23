@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import useWebSocket from "../hooks/useWebSocket";
 import JoinScreen from "../components/JoinScreen";
 import MatchFeed from "../components/MatchFeed";
@@ -17,8 +17,13 @@ import ChatTab from "../components/ChatTab";
 import NotificationCenter from "../components/NotificationCenter";
 import useNotifications from "../hooks/useNotifications";
 import useSettings from "../hooks/useSettings";
+import useSounds from "../hooks/useSounds";
+import useQuests from "../hooks/useQuests";
+import useSquad from "../hooks/useSquad";
+import DailyQuestsCard from "../components/DailyQuestsCard";
+import SquadPanel from "../components/SquadPanel";
 import { useTheme } from "../components/ThemeProvider";
-import { Home, Zap, Trophy, MessageSquare, User } from "lucide-react";
+import { Home, Zap, Trophy, MessageSquare, User, Globe, UsersRound, Monitor } from "lucide-react";
 import { getTier } from "../utils/constants";
 // Dynamic import prevents amazon-cognito-identity-js from running during
 // Next.js static generation (it accesses window/localStorage at module init time,
@@ -320,8 +325,56 @@ export default function ArenaPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connect]);
 
+  // Keep the chat-send ref in sync so the wrapped function above can call it
+  useEffect(() => { _sendChatRef.current = sendChat; }, [sendChat]);
+
   // ── User preferences (mute toggles + language) ─────────────────────────
   const { settings, update: updateSettings, reset: resetSettings } = useSettings();
+
+  // ── Sound effects (respects settings.sound toggle) ─────────────────────
+  const { play: playSound } = useSounds(settings.sound);
+
+  // Wrap sendChat so it plays a tick sound + increments today's chat counter
+  // (used by Daily Quests). Wrapped at the page level so every ChatTab
+  // mount uses the same instrumented send function.
+  const wrappedSendChat = (msg) => {
+    // Forward to the real WebSocket send (declared below via useWebSocket)
+    _sendChatRef.current?.(msg);
+    if (msg && msg.trim()) {
+      setChatSentCount(c => c + 1);
+      playSound("chatSend");
+    }
+  };
+  const _sendChatRef = useRef(null);
+
+  // ── Daily Quests (resets every midnight, persists to localStorage) ─────
+  const [chatSentCount, setChatSentCount] = useState(0);
+  const {
+    quests,
+    claim: claimQuest,
+    claimedXp: questsClaimedXp,
+  } = useQuests({ myPlayer, chatCount: chatSentCount, settings });
+
+  // ── Friend Squad ───────────────────────────────────────────────────────
+  const {
+    squad,
+    create: createSquad,
+    join:   joinSquad,
+    leave:  leaveSquad,
+    rename: renameSquad,
+    addMember:    addSquadMember,
+    removeMember: removeSquadMember,
+  } = useSquad({ myPlayerId: myPlayer?.playerId, myName: myPlayer?.name || playerName });
+
+  // ── Leaderboard view toggle (Global | Squad) ───────────────────────────
+  const [lbView, setLbView] = useState("global"); // "global" | "squad"
+  const squadIds = squad ? new Set(squad.members.map(m => m.playerId)) : null;
+  const visibleLeaderboard = useMemo(() => {
+    if (lbView === "squad" && squadIds) {
+      return leaderboard.filter(p => squadIds.has(p.playerId));
+    }
+    return leaderboard;
+  }, [lbView, leaderboard, squad]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Notifications (respects muteNotifications setting) ─────────────────
   const {
@@ -335,11 +388,19 @@ export default function ArenaPage() {
     muted: settings.muteNotifications,
   });
 
-  // Build chat log from incoming match events
+  // Build chat log from incoming match events + play sound on goals
+  const prevEventIdRef = useRef(null);
   useEffect(() => {
     if (!events.length) return;
     const latest = events[0];
     if (!latest) return;
+
+    // Sound effect — only for genuinely new events (not on every re-render)
+    if (latest.id !== prevEventIdRef.current) {
+      prevEventIdRef.current = latest.id;
+      if (latest.type === "GOAL") playSound("goal");
+    }
+
     const fanName = FAN_NAMES[Math.floor(Math.random() * FAN_NAMES.length)];
     const msg     = getChatMsg(latest.type);
     setChatLog(prev => [{
@@ -349,20 +410,40 @@ export default function ArenaPage() {
       emoji: latest.emoji,
       type: latest.type,
     }, ...prev].slice(0, 20));
-  }, [events]);
+  }, [events, playSound]);
 
-  // XP pop-up when score increases
+  // Play a sound when a prediction window opens
+  const prevPredEventIdRef = useRef(null);
+  useEffect(() => {
+    if (!prediction) { prevPredEventIdRef.current = null; return; }
+    if (prediction.eventId && prediction.eventId !== prevPredEventIdRef.current) {
+      prevPredEventIdRef.current = prediction.eventId;
+      playSound("predictionOpen");
+    }
+  }, [prediction, playSound]);
+
+  // XP pop-up when score increases — also play correct/levelUp sound
   const prevScoreRef = useRef(0);
+  const prevLevelRef = useRef(1);
   const [xpPop, setXpPop] = useState(null);
   useEffect(() => {
     if (myScore > prevScoreRef.current && prevScoreRef.current > 0) {
       const diff = myScore - prevScoreRef.current;
       setXpPop({ diff, id: Date.now() });
+      playSound(diff >= 50 ? "rankUp" : "correct");
       const t = setTimeout(() => setXpPop(null), 1600);
       return () => clearTimeout(t);
     }
     prevScoreRef.current = myScore;
-  }, [myScore]);
+  }, [myScore, playSound]);
+
+  useEffect(() => {
+    const lvl = myPlayer?.level || 1;
+    if (lvl > prevLevelRef.current && prevLevelRef.current > 0) {
+      playSound("levelUp");
+    }
+    prevLevelRef.current = lvl;
+  }, [myPlayer?.level, playSound]);
 
   // ── Auth handlers ───────────────────────────────────────────────────────
   const handleAuth = (result) => {
@@ -616,6 +697,7 @@ export default function ArenaPage() {
               }
             </div>
             <div className="desktop-right-col">
+              <DailyQuestsCard quests={quests} onClaim={claimQuest} onSound={playSound} />
               <GlobalLeadersMini players={leaderboard.slice(0, 3)} />
             </div>
           </div>
@@ -629,7 +711,7 @@ export default function ArenaPage() {
               <MatchFeed events={events} />
               <LiveChat
                 messages={chatMessages}
-                onSend={sendChat}
+                onSend={wrappedSendChat}
                 playerName={playerName}
               />
               <CrowdReactions events={events} />
@@ -640,10 +722,50 @@ export default function ArenaPage() {
           </div>
         )}
 
-        {/* LEADERS */}
+        {/* LEADERS — Global / Squad toggle + squad panel side-by-side */}
         {activeTab === "leaderboard" && (
-          <div className="main desktop-main" style={{ gridTemplateColumns: "1fr" }}>
-            <Leaderboard players={leaderboard} currentPlayerName={playerName} />
+          <div className="main desktop-main">
+            <div className="desktop-left-col">
+              <div className="lb-toggle-bar">
+                <button
+                  className={`lb-toggle-btn ${lbView === "global" ? "active" : ""}`}
+                  onClick={() => setLbView("global")}
+                >
+                  <Globe size={14} strokeWidth={1.75} />
+                  <span>Global</span>
+                  <span className="lb-toggle-count">{leaderboard.length}</span>
+                </button>
+                <button
+                  className={`lb-toggle-btn ${lbView === "squad" ? "active" : ""}`}
+                  onClick={() => setLbView("squad")}
+                  disabled={!squad}
+                >
+                  <UsersRound size={14} strokeWidth={1.75} />
+                  <span>{squad ? squad.name : "Squad"}</span>
+                  {squad && <span className="lb-toggle-count">{squad.members.length}</span>}
+                </button>
+              </div>
+              {lbView === "squad" && !squad ? (
+                <div className="card" style={{ padding: 40, textAlign: "center", color: "var(--text-3)" }}>
+                  Join or create a squad on the right to see squad rankings.
+                </div>
+              ) : (
+                <Leaderboard players={visibleLeaderboard} currentPlayerName={playerName} />
+              )}
+            </div>
+            <div className="desktop-right-col">
+              <SquadPanel
+                squad={squad}
+                onCreate={createSquad}
+                onJoin={joinSquad}
+                onLeave={leaveSquad}
+                onRename={renameSquad}
+                onAddMember={addSquadMember}
+                onRemoveMember={removeSquadMember}
+                myPlayerId={myPlayer?.playerId}
+                leaderboard={leaderboard}
+              />
+            </div>
           </div>
         )}
 
@@ -652,7 +774,7 @@ export default function ArenaPage() {
           <div className="main" style={{ padding: 0, height: "calc(100vh - 56px)" }}>
             <ChatTab
               messages={chatMessages}
-              onSend={sendChat}
+              onSend={wrappedSendChat}
               playerName={playerName}
               connected={connected}
             />
@@ -683,12 +805,13 @@ export default function ArenaPage() {
       {/* ── Mobile: tab-based single column ── */}
       <div className="mobile-main">
 
-        {/* 🏠 HOME — phase-aware hub */}
+        {/* HOME — phase-aware hub */}
         <div className={`mobile-tab-content${activeTab === "home" ? " active" : ""}`}>
           {matchPhase === "live" ? (
             <>
               <WinProbBar home={matchScore.home} away={matchScore.away} />
               <SquadOverviewCard player={fullPlayer} avatarUrl={avatarUrl} />
+              <DailyQuestsCard quests={quests} onClaim={claimQuest} onSound={playSound} compact />
               {activityFeed.length > 0 && (
                 <div className="activity-stream">
                   <div className="activity-hdr">Live Activity</div>
@@ -729,7 +852,7 @@ export default function ArenaPage() {
           <MatchFeed events={events} />
           <LiveChat
             messages={chatMessages}
-            onSend={sendChat}
+            onSend={wrappedSendChat}
             playerName={playerName}
             compact={true}
           />
@@ -738,9 +861,47 @@ export default function ArenaPage() {
           </div>
         </div>
 
-        {/* 🏆 LEADERBOARD */}
+        {/* LEADERBOARD — Global / Squad toggle, then squad panel below */}
         <div className={`mobile-tab-content${activeTab === "leaderboard" ? " active" : ""}`}>
-          <Leaderboard players={leaderboard} currentPlayerName={playerName} />
+          <div className="lb-toggle-bar lb-toggle-bar-mobile">
+            <button
+              className={`lb-toggle-btn ${lbView === "global" ? "active" : ""}`}
+              onClick={() => setLbView("global")}
+            >
+              <Globe size={14} strokeWidth={1.75} />
+              <span>Global</span>
+              <span className="lb-toggle-count">{leaderboard.length}</span>
+            </button>
+            <button
+              className={`lb-toggle-btn ${lbView === "squad" ? "active" : ""}`}
+              onClick={() => setLbView("squad")}
+              disabled={!squad}
+            >
+              <UsersRound size={14} strokeWidth={1.75} />
+              <span>{squad ? squad.name : "Squad"}</span>
+              {squad && <span className="lb-toggle-count">{squad.members.length}</span>}
+            </button>
+          </div>
+          {lbView === "squad" && !squad ? (
+            <div className="card" style={{ padding: 24, textAlign: "center", color: "var(--text-3)", margin: "0 12px" }}>
+              Create or join a squad below.
+            </div>
+          ) : (
+            <Leaderboard players={visibleLeaderboard} currentPlayerName={playerName} />
+          )}
+          <div style={{ padding: "0 12px 12px" }}>
+            <SquadPanel
+              squad={squad}
+              onCreate={createSquad}
+              onJoin={joinSquad}
+              onLeave={leaveSquad}
+              onRename={renameSquad}
+              onAddMember={addSquadMember}
+              onRemoveMember={removeSquadMember}
+              myPlayerId={myPlayer?.playerId}
+              leaderboard={leaderboard}
+            />
+          </div>
         </div>
 
         {/* 👤 PROFILE — inline, no overlay */}
@@ -765,7 +926,7 @@ export default function ArenaPage() {
           style={{ height: "calc(100vh - 56px - 56px)", display: activeTab === "chat" ? "flex" : "none", flexDirection: "column" }}>
           <ChatTab
             messages={chatMessages}
-            onSend={sendChat}
+            onSend={wrappedSendChat}
             playerName={playerName}
             connected={connected}
           />
