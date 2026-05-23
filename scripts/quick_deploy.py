@@ -68,7 +68,18 @@ def get_or_create_lambda(fn_name, handler_path, role_arn, layers):
             Handler="handler.lambda_handler",
             Code={"ZipFile": code},
             Layers=layers,
-            Environment={"Variables": {"REGION": REGION}},
+            Environment={"Variables": {
+                # The arena.db layer reads table names from these env vars.
+                # Without them every DynamoDB call raises KeyError. Bug found
+                # in production on AdminAction + Chat — keep this complete.
+                "REGION":              REGION,
+                "CONNECTIONS_TABLE":   "ConnectedArena-Connections",
+                "PLAYERS_TABLE":       "ConnectedArena-Players",
+                "PREDICTIONS_TABLE":   "ConnectedArena-Predictions",
+                "MATCH_EVENTS_TABLE":  "ConnectedArena-MatchEvents",
+                "GAME_ROOM_TABLE":     "ConnectedArena-GameRoom",
+                "WS_ENDPOINT":         f"https://{API_ID}.execute-api.{REGION}.amazonaws.com/{STAGE}",
+            }},
             Timeout=15,
         )
         wait_active(fn_name)
