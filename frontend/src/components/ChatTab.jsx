@@ -39,6 +39,23 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
   const listRef  = useRef(null);
   const inputRef = useRef(null);
 
+  // Close the reaction picker when clicking anywhere outside of it.
+  // Works on both mouse and touch — replaces the broken onMouseLeave handler.
+  useEffect(() => {
+    if (!reactionTarget) return;
+    function handleOutside(e) {
+      if (!e.target.closest(".ct-rx-picker") && !e.target.closest(".ct-rx-add")) {
+        setRT(null);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+    };
+  }, [reactionTarget]);
+
   // ── Auto-scroll ──────────────────────────────────────────────────────────
   // With flex-direction:column-reverse, scrollTop=0 IS the visual bottom
   // (newest messages). We DON'T use scrollIntoView — just reset scrollTop.
@@ -149,7 +166,6 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
                 <div
                   key={m.id}
                   className={`ct-msg${isMe ? " ct-msg-me" : ""}`}
-                  onMouseLeave={() => setRT(null)}
                 >
                   {/* Avatar */}
                   <div
@@ -187,10 +203,10 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
                     {/* Add reaction button */}
                     <button
                       className="ct-rx-add"
-                      onClick={() => setRT(rt => rt === m.id ? null : m.id)}
+                      onClick={(e) => { e.stopPropagation(); setRT(rt => rt === m.id ? null : m.id); }}
                       title="React"
                     >
-                      😊
+                      😊 React
                     </button>
 
                     {/* Reaction picker */}
