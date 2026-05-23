@@ -336,6 +336,7 @@ export default function AdminPage() {
   function signOutAdmin() {
     clearCognitoSession();
     setAdminUser(false);
+    if (typeof window !== "undefined") window.location.href = "/";
   }
 
   function sendAdminAction(type, playerId = "") {
