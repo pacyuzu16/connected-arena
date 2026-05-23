@@ -5448,3 +5448,386 @@ button:disabled,
   box-shadow: none !important;
 }
 
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LUCIDE ICONS + RECHARTS — Modern component refresh
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Brand mark (replaces 🏟️) — minimal monogram in a square ── */
+.admin-brand-mark {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: var(--text);
+  color: var(--surface);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* ── Sidebar nav alignment with lucide ── */
+.admin-nav-item .admin-nav-icon {
+  color: var(--text-3);
+  transition: color var(--t);
+}
+.admin-nav-item:hover .admin-nav-icon,
+.admin-nav-item.active .admin-nav-icon {
+  color: var(--accent);
+}
+
+/* ── Sidebar footer items with lucide ── */
+.admin-sidebar-user {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+.admin-sidebar-signout {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  gap: 8px;
+}
+
+/* ── Top bar lucide alignment ── */
+.admin-burger {
+  display: none;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: var(--r-md); cursor: pointer;
+  padding: 6px 8px;
+  color: var(--text);
+  align-items: center;
+}
+.admin-topbar-title {
+  display: flex; align-items: center; gap: 10px;
+}
+.admin-topbar-title .admin-topbar-icon {
+  color: var(--accent);
+}
+
+/* ── Status pill with lucide ── */
+.admin-ws-status {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Refresh / reconnect button with icon ── */
+.admin-reconnect-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── KPI icon — refined container with lucide ── */
+.admin-kpi-card .admin-kpi-icon {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: var(--r-md);
+  background: var(--surface2);
+  margin-bottom: 8px;
+}
+
+/* ── Card headers with lucide ── */
+.admin-card-hdr {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+.admin-card-hdr svg {
+  color: var(--text-3);
+  opacity: 0.9;
+}
+
+/* ── Error banner with icon ── */
+.admin-error-banner {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── User-management search input redesign ── */
+.admin-search-wrap {
+  position: relative;
+  padding: 12px 18px 8px;
+}
+.admin-search-icon {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-25%);
+  color: var(--text-3);
+  pointer-events: none;
+}
+.admin-search-input {
+  width: 100%;
+  padding: 9px 12px 9px 36px;
+  border-radius: var(--r-md);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.admin-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-ring);
+}
+
+/* ── Status pill with icon ── */
+.admin-status-pill {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+}
+.admin-status-pill svg { flex-shrink: 0; }
+
+/* ── Spinner animation for "Loading users…" ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CHART CARDS (Recharts)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 1100px) {
+  .charts-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--t), border-color var(--t);
+}
+.chart-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-card-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.012em;
+  border-bottom: 1px solid var(--border);
+}
+.chart-card-hdr svg { color: var(--text-3); }
+
+.chart-card-body {
+  padding: 14px 12px 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-empty {
+  font-size: 13px;
+  color: var(--text-3);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* ── Recharts tooltip — match our design language ── */
+.chart-tooltip {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  padding: 8px 10px;
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  min-width: 120px;
+}
+.chart-tooltip-label {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.chart-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+.chart-tooltip-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.chart-tooltip-name {
+  color: var(--text-2);
+  flex: 1;
+}
+.chart-tooltip-value {
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Recharts default text styles */
+.recharts-text { fill: var(--text-3); }
+.recharts-cartesian-axis-tick-value { font-family: var(--font-sans); }
+.recharts-default-legend { padding: 8px 0 0 !important; }
+.recharts-legend-item { margin-right: 12px !important; }
+
+/* ── Notification bell — modernize ── */
+.notif-bell {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--r-md) !important;
+  color: var(--text-2) !important;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--t), border-color var(--t), color var(--t);
+}
+.notif-bell:hover {
+  background: var(--surface2) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+.notif-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.notif-item-dismiss {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-3) !important;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  transition: background var(--t), color var(--t);
+}
+.notif-item-dismiss:hover {
+  background: var(--surface2) !important;
+  color: var(--text) !important;
+}
+.notif-full-enable-btn {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  gap: 8px;
+}
+
+/* ── Chat header / send / react with lucide ── */
+.ct-hdr-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+}
+.ct-offline-pill {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+}
+.ct-send {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  padding: 0 !important;
+  background: var(--accent) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--r-md) !important;
+}
+.ct-rx-add {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+}
+.ct-xp-hint {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Profile chrome buttons (mobile + desktop) with lucide ── */
+.edit-identity-btn,
+.dpp-edit-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+.mobile-settings-row,
+.dpp-setting-row {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+.mobile-settings-row svg,
+.dpp-setting-row svg {
+  color: var(--text-2);
+}
+
+/* ── Settings panel: lucide header & section title alignment ── */
+.settings-hdr {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+}
+.settings-section-title {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+.settings-icon {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  color: var(--text-2);
+  width: 22px;
+}
+.settings-reset {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  gap: 6px;
+}
+
+/* Auth-screen monogram mark (replaces the emoji logo on login screens) */
+.auth-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 14px;
+  background: var(--text);
+  color: var(--surface);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-sm);
+}

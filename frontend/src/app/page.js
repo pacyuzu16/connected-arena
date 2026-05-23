@@ -18,6 +18,7 @@ import NotificationCenter from "../components/NotificationCenter";
 import useNotifications from "../hooks/useNotifications";
 import useSettings from "../hooks/useSettings";
 import { useTheme } from "../components/ThemeProvider";
+import { Home, Zap, Trophy, MessageSquare, User } from "lucide-react";
 import { getTier } from "../utils/constants";
 // Dynamic import prevents amazon-cognito-identity-js from running during
 // Next.js static generation (it accesses window/localStorage at module init time,
@@ -564,18 +565,18 @@ export default function ArenaPage() {
       {/* ── Desktop: tab navigation bar ── */}
       <nav className="desktop-tab-bar">
         {[
-          { id: "home",        icon: "🏠", label: "Home"    },
-          { id: "arena",       icon: "⚡", label: "Arena",  badge: prediction ? "!" : null },
-          { id: "leaderboard", icon: "🏆", label: "Leaders" },
-          { id: "chat",        icon: "💬", label: "Chat"   },
-          { id: "profile",     icon: "👤", label: "Profile" },
+          { id: "home",        Icon: Home,          label: "Home"    },
+          { id: "arena",       Icon: Zap,           label: "Arena",  badge: prediction ? "!" : null },
+          { id: "leaderboard", Icon: Trophy,        label: "Leaders" },
+          { id: "chat",        Icon: MessageSquare, label: "Chat"   },
+          { id: "profile",     Icon: User,          label: "Profile" },
         ].map(t => (
           <button
             key={t.id}
             className={`desktop-tab-btn${activeTab === t.id ? " active" : ""}`}
             onClick={() => setActiveTab(t.id)}
           >
-            <span>{t.icon}</span>
+            <t.Icon size={16} strokeWidth={1.75} />
             <span>{t.label}</span>
             {t.badge && <span className="desktop-tab-badge">{t.badge}</span>}
           </button>
@@ -775,11 +776,11 @@ export default function ArenaPage() {
       {/* ── Mobile Bottom Navigation ── */}
       <nav className="mobile-bottom-nav">
         {[
-          { id: "home",        icon: "🏠", label: "Home"       },
-          { id: "arena",       icon: "⚡", label: "Arena",     badge: prediction ? "!" : null },
-          { id: "leaderboard", icon: "🏆", label: "Leaders"    },
-          { id: "profile",     icon: "👤", label: "Profile"    },
-          { id: "chat",        icon: "💬", label: "Chat"       },
+          { id: "home",        Icon: Home,          label: "Home"       },
+          { id: "arena",       Icon: Zap,           label: "Arena",     badge: prediction ? "!" : null },
+          { id: "leaderboard", Icon: Trophy,        label: "Leaders"    },
+          { id: "profile",     Icon: User,          label: "Profile"    },
+          { id: "chat",        Icon: MessageSquare, label: "Chat"       },
         ].map(tab => (
           <button
             key={tab.id}
@@ -787,7 +788,7 @@ export default function ArenaPage() {
             onClick={() => setActiveTab(tab.id)}
           >
             <span className="mobile-nav-icon">
-              {tab.icon}
+              <tab.Icon size={20} strokeWidth={1.75} />
               {tab.badge && <span className="mobile-nav-badge">{tab.badge}</span>}
             </span>
             <span className="mobile-nav-label">{tab.label}</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Pencil, Sun, Moon, LogOut } from "lucide-react";
 import { getTier } from "../utils/constants";
 import { ACHIEVEMENTS } from "./ProfilePanel";
 import SettingsPanel from "./SettingsPanel";
@@ -155,7 +156,7 @@ export default function DesktopProfilePanel({
           </div>
         ) : (
           <button className="dpp-edit-btn" onClick={() => { setNameInput(player.name); setEditingName(true); }}>
-            ✏️ Edit Identity
+            <Pencil size={14} strokeWidth={1.75} /> Edit Identity
           </button>
         )}
 
@@ -167,11 +168,11 @@ export default function DesktopProfilePanel({
         {/* Theme + Leave */}
         <div className="dpp-settings">
           <button className="dpp-setting-row" onClick={toggleTheme}>
-            <span>{theme === "dark" ? "☀️" : "🌙"}</span>
+            <span>{theme === "dark" ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}</span>
             <span>{theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
           </button>
           <button className="dpp-setting-row dpp-leave" onClick={onLeave}>
-            <span>🚪</span>
+            <span><LogOut size={16} strokeWidth={1.75} /></span>
             <span>Leave Arena</span>
           </button>
         </div>

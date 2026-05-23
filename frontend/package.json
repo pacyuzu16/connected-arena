@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "amazon-cognito-identity-js": "^6.3.16",
+    "lucide-react": "^1.16.0",
     "next": "^14.2.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "recharts": "^3.8.1"
   },
   "scripts": {
     "dev": "next dev",

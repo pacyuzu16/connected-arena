@@ -1,6 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  LayoutDashboard, Users, Trophy, Activity, Shield,
+  LogOut, Menu, RefreshCw, User, Wifi, WifiOff, AlertCircle,
+  Search, Ban, CheckCircle2, Loader2, Cpu, Info,
+  Target, Sparkles, PieChart, Zap,
+} from "lucide-react";
+import AdminCharts from "../../components/AdminCharts";
 
 const HOME_TEAM  = "DFL-CLU-000001";
 const WS_URL     = process.env.NEXT_PUBLIC_WS_URL || "";
@@ -146,7 +153,7 @@ function AdminLogin({ onLogin }) {
     <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"var(--bg)", padding:16 }}>
       <div className="auth-card" style={{ maxWidth:380, width:"100%" }}>
         <div className="auth-header">
-          <div className="auth-logo">🏟️</div>
+          <div className="auth-logo auth-logo-mark">CA</div>
           <div className="auth-title">Admin Dashboard</div>
           <div className="auth-sub">
             {mode === "signin" && "Sign in with admin@gmail.com"}
@@ -350,13 +357,13 @@ export default function AdminPage() {
     u.playerId.toLowerCase().includes(userSearch.toLowerCase())
   );
 
-  // Navigation items for the sidebar
+  // Navigation items for the sidebar — Lucide icons for modern, consistent UI
   const NAV = [
-    { id: "overview",   icon: "📊", label: "Overview"      },
-    { id: "users",      icon: "👥", label: "User Management" },
-    { id: "leaderboard",icon: "🏆", label: "Leaderboard"   },
-    { id: "match",      icon: "⚽", label: "Match Status"  },
-    { id: "auth",       icon: "🔐", label: "Identity & Auth" },
+    { id: "overview",   Icon: LayoutDashboard, label: "Overview"        },
+    { id: "users",      Icon: Users,           label: "User Management" },
+    { id: "leaderboard",Icon: Trophy,          label: "Leaderboard"     },
+    { id: "match",      Icon: Activity,        label: "Match Status"    },
+    { id: "auth",       Icon: Shield,          label: "Identity & Auth" },
   ];
   const currentNav = NAV.find(n => n.id === view) || NAV[0];
 
@@ -366,7 +373,7 @@ export default function AdminPage() {
       {/* ── Sidebar (collapsible on mobile) ── */}
       <aside className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="admin-sidebar-brand">
-          <span className="admin-logo">🏟️</span>
+          <div className="admin-brand-mark">CA</div>
           <div>
             <div className="admin-sidebar-title">Connected Arena</div>
             <div className="admin-sidebar-sub">Admin Console</div>
@@ -374,22 +381,26 @@ export default function AdminPage() {
         </div>
 
         <nav className="admin-nav">
-          {NAV.map(n => (
+          {NAV.map(({ id, Icon, label }) => (
             <button
-              key={n.id}
-              className={`admin-nav-item ${view === n.id ? "active" : ""}`}
-              onClick={() => { setView(n.id); setSidebarOpen(false); }}
+              key={id}
+              className={`admin-nav-item ${view === id ? "active" : ""}`}
+              onClick={() => { setView(id); setSidebarOpen(false); }}
             >
-              <span className="admin-nav-icon">{n.icon}</span>
-              <span className="admin-nav-label">{n.label}</span>
+              <Icon size={18} strokeWidth={1.75} className="admin-nav-icon" />
+              <span className="admin-nav-label">{label}</span>
             </button>
           ))}
         </nav>
 
         <div className="admin-sidebar-footer">
-          <div className="admin-user-pill admin-sidebar-user">👤 {adminUser.email}</div>
+          <div className="admin-user-pill admin-sidebar-user">
+            <User size={13} strokeWidth={1.75} />
+            <span>{adminUser.email}</span>
+          </div>
           <button className="admin-signout-btn admin-sidebar-signout" onClick={signOutAdmin}>
-            ⎋ Sign Out
+            <LogOut size={15} strokeWidth={1.75} />
+            <span>Sign Out</span>
           </button>
         </div>
       </aside>
@@ -403,19 +414,22 @@ export default function AdminPage() {
 
         {/* Top bar */}
         <header className="admin-topbar">
-          <button className="admin-burger" onClick={() => setSidebarOpen(o => !o)}>☰</button>
+          <button className="admin-burger" onClick={() => setSidebarOpen(o => !o)} aria-label="Toggle sidebar">
+            <Menu size={20} strokeWidth={1.75} />
+          </button>
           <div className="admin-topbar-title">
-            <span className="admin-topbar-icon">{currentNav.icon}</span>
-            {currentNav.label}
+            <currentNav.Icon size={20} strokeWidth={1.75} className="admin-topbar-icon" />
+            <span>{currentNav.label}</span>
           </div>
           <div className="admin-topbar-right">
             <div className={`admin-ws-status ${isConn ? "connected" : wsStatus==="connecting" ? "connecting" : "disconnected"}`}>
               <span className="admin-ws-dot" />
-              {isConn ? "Live" : wsStatus==="connecting" ? "Connecting…" : wsStatus==="error" ? "Error" : "Offline"}
+              <span>{isConn ? "Live" : wsStatus==="connecting" ? "Connecting" : wsStatus==="error" ? "Error" : "Offline"}</span>
             </div>
             {!isConn && wsStatus !== "connecting" && (
               <button className="admin-reconnect-btn" onClick={connect}>
-                {wsStatus === "error" ? "Retry" : "Connect"}
+                <RefreshCw size={13} strokeWidth={2} />
+                <span>{wsStatus === "error" ? "Retry" : "Connect"}</span>
               </button>
             )}
           </div>
@@ -423,7 +437,8 @@ export default function AdminPage() {
 
         {wsStatus === "error" && wsError && (
           <div className="admin-error-banner">
-            <strong>⚠️ WebSocket Error:</strong> {wsError}
+            <AlertCircle size={16} strokeWidth={1.75} />
+            <span><strong>WebSocket Error:</strong> {wsError}</span>
           </div>
         )}
 
@@ -435,24 +450,29 @@ export default function AdminPage() {
         {/* ── KPI row ── */}
         <div className="admin-kpi-row">
           {[
-            { icon:"👥", val: players.length,  lbl:"Fans Connected",    color:"#10b981" },
-            { icon:"🎯", val: totalPreds,       lbl:"Total Predictions", color:"var(--accent)" },
-            { icon:"✅", val: totalCorrect,     lbl:"Correct Picks",     color:"#3b82f6" },
-            { icon:"⭐", val: totalXP,          lbl:"Total XP Awarded",  color:"#f59e0b" },
-            { icon:"📊", val: `${avgAcc}%`,     lbl:"Avg Accuracy",      color:"#8b5cf6" },
-            { icon:"⚡", val: eventCount,       lbl:"Events Processed",  color:"#06b6d4" },
+            { Icon: Users,        val: players.length, lbl:"Fans Connected",    color:"#059669" },
+            { Icon: Target,       val: totalPreds,     lbl:"Total Predictions", color:"var(--accent)" },
+            { Icon: CheckCircle2, val: totalCorrect,   lbl:"Correct Picks",     color:"#2563eb" },
+            { Icon: Sparkles,     val: totalXP,        lbl:"Total XP Awarded",  color:"#d97706" },
+            { Icon: PieChart,     val:`${avgAcc}%`,    lbl:"Avg Accuracy",      color:"#7c3aed" },
+            { Icon: Zap,          val: eventCount,     lbl:"Events Processed",  color:"#0891b2" },
           ].map(k => (
             <div key={k.lbl} className="admin-kpi-card">
-              <div className="admin-kpi-icon" style={{ color:k.color }}>{k.icon}</div>
-              <div className="admin-kpi-val"  style={{ color:k.color }}>{k.val}</div>
+              <div className="admin-kpi-icon" style={{ color:k.color }}>
+                <k.Icon size={20} strokeWidth={1.75} />
+              </div>
+              <div className="admin-kpi-val" style={{ color:k.color }}>{k.val}</div>
               <div className="admin-kpi-lbl">{k.lbl}</div>
             </div>
           ))}
         </div>
 
+        {/* ── Modern Recharts dashboard ── */}
+        <AdminCharts players={players} events={events} eventCount={eventCount} />
+
         {/* ── ML Insights (overview) ── */}
         <div className="admin-card admin-insights-card">
-          <div className="admin-card-hdr">🤖 ML-Powered Insights &amp; Recommendations</div>
+          <div className="admin-card-hdr"><Cpu size={16} strokeWidth={1.75} /> ML-Powered Insights &amp; Recommendations</div>
           <div className="admin-insights-grid">
             {insights.map((ins, i) => (
               <div key={i} className={`admin-insight admin-insight-${ins.type}`}>
@@ -468,7 +488,7 @@ export default function AdminPage() {
 
         {/* ── Debug Info (overview footer) ── */}
         <div className="admin-card">
-          <div className="admin-card-hdr">🔧 System Info</div>
+          <div className="admin-card-hdr"><Info size={16} strokeWidth={1.75} /> System Info</div>
           <div style={{ padding:"14px 18px", fontSize:12, color:"var(--text-2)", lineHeight:2 }}>
             <div><strong>WS endpoint:</strong> {WS_URL || <span style={{color:"#ef4444"}}>NOT SET — check .env.local</span>}</div>
             <div><strong>Status:</strong> {wsStatus}</div>
@@ -488,7 +508,7 @@ export default function AdminPage() {
 
           {/* Match Status */}
           <div className="admin-card">
-            <div className="admin-card-hdr">⚽ Match Status</div>
+            <div className="admin-card-hdr"><Activity size={16} strokeWidth={1.75} /> Match Status</div>
             <div className="admin-match-score">
               <span className="admin-match-team home">HAM</span>
               <span className="admin-match-num">{matchScore.home} — {matchScore.away}</span>
@@ -511,7 +531,7 @@ export default function AdminPage() {
 
           {/* Activity Log */}
           <div className="admin-card">
-            <div className="admin-card-hdr">📋 Live Activity Log</div>
+            <div className="admin-card-hdr"><Activity size={16} strokeWidth={1.75} /> Live Activity Log</div>
             {actLog.length === 0
               ? <div className="admin-empty">{isConn ? "Waiting for events…" : "Connect to see activity"}</div>
               : (
@@ -534,7 +554,7 @@ export default function AdminPage() {
         {/* ============ LEADERBOARD ============ */}
         {view === "leaderboard" && (
         <div className="admin-card">
-          <div className="admin-card-hdr">🏆 Live Leaderboard</div>
+          <div className="admin-card-hdr"><Trophy size={16} strokeWidth={1.75} /> Live Leaderboard</div>
           {players.length === 0
             ? <div className="admin-empty">{isConn ? "No players yet" : "Connect to see live data"}</div>
             : (
@@ -564,7 +584,7 @@ export default function AdminPage() {
         {/* ============ IDENTITY & AUTH ============ */}
         {view === "auth" && (
         <div className="admin-card">
-          <div className="admin-card-hdr">🔐 Identity &amp; Auth Strategy</div>
+          <div className="admin-card-hdr"><Shield size={16} strokeWidth={1.75} /> Identity &amp; Auth Strategy</div>
           <div className="admin-auth-grid">
             <div className="admin-auth-item current">
               <div className="admin-auth-badge">LIVE ✅</div>
@@ -611,20 +631,22 @@ export default function AdminPage() {
         {view === "users" && (
         <div className="admin-card">
           <div className="admin-card-hdr" style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <span>👥 User Management</span>
+            <span style={{ display:"inline-flex", alignItems:"center", gap:8 }}><Users size={16} strokeWidth={1.75} /> User Management</span>
             <button
               className="admin-reconnect-btn"
               style={{ fontSize:11 }}
               onClick={() => sendAdminAction("getUsers")}
             >
-              ↻ Refresh
+              <RefreshCw size={12} strokeWidth={2} />
+              <span>Refresh</span>
             </button>
           </div>
 
-          <div style={{ padding:"10px 18px 6px" }}>
+          <div className="admin-search-wrap">
+            <Search size={15} strokeWidth={1.75} className="admin-search-icon" />
             <input
-              style={{ width:"100%", padding:"7px 12px", borderRadius:8, background:"var(--surface2)", border:"1px solid var(--border)", color:"var(--text)", fontSize:13, outline:"none", boxSizing:"border-box" }}
-              placeholder="Search by name or player ID…"
+              className="admin-search-input"
+              placeholder="Search by name or player ID"
               value={userSearch}
               onChange={e => setUserSearch(e.target.value)}
             />
@@ -632,7 +654,11 @@ export default function AdminPage() {
 
           {filteredUsers.length === 0 ? (
             <div className="admin-empty">
-              {isConn ? (allUsers.length === 0 ? "Loading users…" : "No users match your search") : "Connect to manage users"}
+              {isConn ? (
+                allUsers.length === 0
+                  ? <span style={{display:"inline-flex",alignItems:"center",gap:8}}><Loader2 size={14} className="spin" /> Loading users…</span>
+                  : "No users match your search"
+              ) : "Connect to manage users"}
             </div>
           ) : (
             <div style={{ overflowX:"auto" }}>
@@ -653,15 +679,17 @@ export default function AdminPage() {
                     <tr key={u.playerId} className={u.suspended ? "admin-user-suspended" : ""}>
                       <td className="admin-user-rank">{u.rank || i+1}</td>
                       <td className="admin-user-name">
-                        <div style={{ fontWeight:700, fontSize:13 }}>{u.name}</div>
+                        <div style={{ fontWeight:600, fontSize:13 }}>{u.name}</div>
                         <div style={{ fontSize:10, color:"var(--text-3)", fontFamily:"monospace" }}>{u.playerId}</div>
                       </td>
-                      <td>⭐ {u.score}</td>
+                      <td>{u.score}</td>
                       <td>{u.predictions}</td>
                       <td>{u.accuracy}%</td>
                       <td>
                         <span className={`admin-status-pill ${u.suspended ? "suspended" : "active"}`}>
-                          {u.suspended ? "🚫 Suspended" : "✅ Active"}
+                          {u.suspended
+                            ? <><Ban size={11} strokeWidth={2} /> Suspended</>
+                            : <><CheckCircle2 size={11} strokeWidth={2} /> Active</>}
                         </span>
                       </td>
                       <td>

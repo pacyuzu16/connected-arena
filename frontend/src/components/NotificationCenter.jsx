@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import { Bell, BellOff, X } from "lucide-react";
 
 function relTime(ts) {
   const s = Math.floor((Date.now() - ts) / 1000);
@@ -64,7 +65,7 @@ export default function NotificationCenter({
         title="Notifications"
         aria-label={`Notifications${unreadCount ? ` (${unreadCount} unread)` : ""}`}
       >
-        🔔
+        <Bell size={18} strokeWidth={1.75} />
         {unreadCount > 0 && (
           <span className="notif-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
         )}
@@ -84,7 +85,7 @@ export default function NotificationCenter({
 
           {notifications.length === 0 ? (
             <div className="notif-empty">
-              <div className="notif-empty-icon">🔔</div>
+              <div className="notif-empty-icon"><BellOff size={28} strokeWidth={1.5} /></div>
               <div>No notifications yet</div>
               <div className="notif-empty-sub">Goals, predictions and rank changes appear here</div>
             </div>
@@ -106,8 +107,9 @@ export default function NotificationCenter({
                     className="notif-item-dismiss"
                     onClick={() => dismiss(n.id)}
                     title="Dismiss"
+                    aria-label="Dismiss notification"
                   >
-                    ✕
+                    <X size={14} strokeWidth={2} />
                   </button>
                 </div>
               ))}
@@ -117,7 +119,8 @@ export default function NotificationCenter({
           {permission !== "granted" && (
             <div className="notif-panel-footer">
               <button className="notif-full-enable-btn" onClick={requestPermission}>
-                🔔 Enable browser notifications
+                <Bell size={14} strokeWidth={1.75} />
+                <span>Enable browser notifications</span>
               </button>
               <div className="notif-footer-note">
                 Get alerts even when this tab is in the background

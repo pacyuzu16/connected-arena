@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Pencil, Sun, Moon, LogOut } from "lucide-react";
 import { getTier } from "../utils/constants";
 import { ACHIEVEMENTS } from "./ProfilePanel";
 import SettingsPanel from "./SettingsPanel";
@@ -171,7 +172,7 @@ export default function MobileProfileTab({ player, recentActivity = [], avatarUr
           </div>
         ) : (
           <button className="edit-identity-btn" onClick={() => { setNameInput(player.name); setEditingName(true); }}>
-            ✏️ Edit Identity
+            <Pencil size={14} strokeWidth={1.75} /> Edit Identity
           </button>
         )}
       </div>
@@ -187,7 +188,7 @@ export default function MobileProfileTab({ player, recentActivity = [], avatarUr
       <div className="mobile-settings-section" style={{ margin: "16px 16px 0" }}>
         <div className="mobile-settings-title">Appearance</div>
         <button className="mobile-settings-row" onClick={toggleTheme}>
-          <span>{theme === "dark" ? "☀️" : "🌙"}</span>
+          <span>{theme === "dark" ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}</span>
           <span>{theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
           <span className="mobile-settings-chevron">›</span>
         </button>
@@ -195,7 +196,7 @@ export default function MobileProfileTab({ player, recentActivity = [], avatarUr
 
       <div className="mobile-settings-section" style={{ margin: "12px 16px 0" }}>
         <button className="mobile-settings-row" onClick={onLeave}>
-          <span>🚪</span>
+          <span><LogOut size={16} strokeWidth={1.75} /></span>
           <span>Leave Arena</span>
           <span className="mobile-settings-chevron">›</span>
         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { MessageSquare, Send, SmilePlus, WifiOff, ArrowDown, Sparkles } from "lucide-react";
 
 const REACTIONS = ["🔥", "👏", "😮", "❤️", "😂", "⚽"];
 
@@ -128,10 +129,14 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
 
       {/* ── Header ── */}
       <div className="ct-hdr">
-        <span className="ct-hdr-icon">💬</span>
+        <span className="ct-hdr-icon"><MessageSquare size={16} strokeWidth={1.75} /></span>
         <span className="ct-hdr-title">Live Chat</span>
         <span className="ct-hdr-count">{messages.length} messages</span>
-        {!connected && <span className="ct-offline-pill">Offline</span>}
+        {!connected && (
+          <span className="ct-offline-pill">
+            <WifiOff size={11} strokeWidth={2} /> Offline
+          </span>
+        )}
       </div>
 
       <div className="ct-body">
@@ -142,7 +147,7 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
           {/* Scroll-up banner */}
           {paused && (
             <button className="ct-resume-btn" onClick={resumeLive}>
-              ↓ Resume live chat
+              <ArrowDown size={13} strokeWidth={2} /> Resume live chat
             </button>
           )}
 
@@ -206,7 +211,8 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
                       onClick={(e) => { e.stopPropagation(); setRT(rt => rt === m.id ? null : m.id); }}
                       title="React"
                     >
-                      😊 React
+                      <SmilePlus size={13} strokeWidth={1.75} />
+                      <span>React</span>
                     </button>
 
                     {/* Reaction picker */}
@@ -244,13 +250,14 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
               className="ct-send"
               disabled={!draft.trim() || !connected}
               title="Send"
+              aria-label="Send message"
             >
-              ↑
+              <Send size={16} strokeWidth={2} />
             </button>
           </form>
           <div className="ct-char-hint">
             {draft.length > 150 && <span>{200 - draft.length} chars left</span>}
-            <span className="ct-xp-hint">💬 Every 5 messages = +5 XP</span>
+            <span className="ct-xp-hint"><Sparkles size={11} strokeWidth={1.75} /> Every 5 messages = +5 XP</span>
           </div>
         </div>
 

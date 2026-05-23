@@ -70,7 +70,7 @@ export default function AuthScreen({ onAuth, onGuest }) {
 
         {/* Header */}
         <div className="auth-header">
-          <div className="auth-logo">⚽</div>
+          <div className="auth-logo auth-logo-mark">CA</div>
           <div className="auth-title">Connected Arena</div>
           <div className="auth-sub">
             {mode === "signin" && "Sign in to save your XP forever"}
