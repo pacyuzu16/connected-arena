@@ -24,7 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Trophy, Brain, Sparkles, UsersRound, Target, Monitor,
-  ArrowRight, PlayCircle, Code2, Zap, MessageSquare, Activity,
+  ArrowRight, PlayCircle, Zap, MessageSquare, Activity,
 } from "lucide-react";
 
 /* ── Reveal-on-scroll wrapper (zero dependencies) ──────────────────── */
@@ -239,7 +239,7 @@ export default function LandingPage() {
             <Reveal>
               <div className="lp-pill">
                 <span className="lp-pill-dot" />
-                <span>Built on AWS · Live for Bundesliga 25/26</span>
+                <span>Free · Play on any phone or laptop</span>
               </div>
             </Reveal>
 
@@ -252,10 +252,10 @@ export default function LandingPage() {
 
             <Reveal delay={160}>
               <p className="lp-hero-sub">
-                Predict every shot, penalty and turning point as it happens.
-                Earn XP. Climb the leaderboard. Argue with friends in live chat —
-                all powered by real Bundesliga match data and an AI commentator
-                that adapts to how you watch.
+                Predict every shot. Earn points. Climb the leaderboard.
+                Chat with other fans while the match is actually happening —
+                and find out what football feels like when you're in the game,
+                not on the sofa.
               </p>
             </Reveal>
 
@@ -267,7 +267,7 @@ export default function LandingPage() {
                 </Link>
                 <Link href="/stadium" className="lp-btn-ghost lp-btn-lg">
                   <PlayCircle size={16} strokeWidth={1.75} />
-                  <span>Open stadium view</span>
+                  <span>Watch-party mode</span>
                 </Link>
               </div>
             </Reveal>
@@ -276,12 +276,12 @@ export default function LandingPage() {
               <div className="lp-hero-mini">
                 <div className="lp-hero-mini-item">
                   <strong>Free to play</strong>
-                  <span>No download. Works on any browser.</span>
+                  <span>No download. Just open and go.</span>
                 </div>
                 <div className="lp-hero-mini-divider" />
                 <div className="lp-hero-mini-item">
-                  <strong>Real ML</strong>
-                  <span>xG model trained on 57k professional shots.</span>
+                  <strong>Play with friends</strong>
+                  <span>Create a squad, share a code, compete.</span>
                 </div>
               </div>
             </Reveal>
@@ -298,12 +298,13 @@ export default function LandingPage() {
         <div className="lp-container">
           <Reveal>
             <div className="lp-trust-row">
-              <span className="lp-trust-label">Built for</span>
-              <span className="lp-trust-item">AWS Sports AI Innovation Cup 2026</span>
+              <span className="lp-trust-item">Real Bundesliga matches</span>
               <span className="lp-trust-divider" />
-              <span className="lp-trust-item">Challenge 4 · Real-time multiplayer fan engagement</span>
+              <span className="lp-trust-item">Phone, tablet, laptop or TV</span>
               <span className="lp-trust-divider" />
-              <span className="lp-trust-item">Bundesliga open data · StatsBomb</span>
+              <span className="lp-trust-item">Live chat with fans worldwide</span>
+              <span className="lp-trust-divider" />
+              <span className="lp-trust-item">No account needed to start</span>
             </div>
           </Reveal>
         </div>
@@ -314,10 +315,10 @@ export default function LandingPage() {
         <div className="lp-container">
           <Reveal>
             <div className="lp-section-head">
-              <div className="lp-eyebrow">Features</div>
-              <h2 className="lp-h2">Built for the way fans actually watch</h2>
+              <div className="lp-eyebrow">What you'll do</div>
+              <h2 className="lp-h2">A football match, but you're in it</h2>
               <p className="lp-lead">
-                Six features that turn a 90-minute match into something you don't put your phone down for.
+                Six things that make a regular match feel completely different. Nothing to install, nothing to learn.
               </p>
             </div>
           </Reveal>
@@ -326,33 +327,33 @@ export default function LandingPage() {
             {[
               {
                 Icon: Target, color: "#ea580c",
-                title: "Live predictions in 10 seconds",
-                body: "Every shot, penalty and free kick triggers a YES/NO question with a real countdown. Correct picks earn XP. Surprise goals reward triple.",
+                title: "Call every shot",
+                body: "Every shot, penalty and free kick gives you 10 seconds to predict what happens next. Get it right, earn points. Get a long-shot goal right? Three times the points.",
               },
               {
                 Icon: Brain, color: "#7c3aed",
-                title: "AI commentary that knows you",
-                body: "Amazon Bedrock writes a unique reaction for every fan based on their persona — casual, passionate, or stats nerd. Same goal, totally different feed.",
+                title: "Commentary that matches your vibe",
+                body: "Tell us how you watch — chilled, loud and dramatic, or all about the numbers. Every goal gets a reaction written just for you.",
               },
               {
                 Icon: Sparkles, color: "#0891b2",
-                title: "Real machine-learning xG",
-                body: "Our Expected Goals model — trained on 57,000 shots across 1,569 professional matches — runs on every shot so you see the real probability live.",
+                title: "See which shots are dangerous",
+                body: "A live bar shows how good every chance really is, before the keeper even reacts. Spot the goals nobody else saw coming.",
               },
               {
                 Icon: UsersRound, color: "#059669",
-                title: "Friend squads & mini-leagues",
-                body: "Create a squad in seconds. Share a 6-character code. Compete on a private leaderboard alongside the global one.",
+                title: "Play with your friends",
+                body: "Make a squad in seconds. Share a six-letter code with your mates. See who's actually the smartest football fan in your group chat.",
               },
               {
                 Icon: Trophy, color: "#d97706",
-                title: "Daily missions & progression",
-                body: "Five missions reset every day. Climb five tiers from Rookie to Apex. Unlock twelve achievements as you play.",
+                title: "Daily missions, real progression",
+                body: "Quick missions reset every day. Climb from Rookie to Apex across five tiers. Unlock badges that show off the kind of fan you are.",
               },
               {
                 Icon: Monitor, color: "#2563eb",
-                title: "Stadium / watch-party mode",
-                body: "A separate big-screen view for TVs and projectors. Massive scoreboard, top-3 podium, goal splashes — perfect for watch parties.",
+                title: "Throw a watch party",
+                body: "Open one link on a TV or projector and your living room becomes a stadium. Massive scoreboard, top fans on the podium, goal alerts that fill the screen.",
               },
             ].map((f, i) => (
               <Reveal key={f.title} delay={i * 60}>
@@ -375,21 +376,21 @@ export default function LandingPage() {
           <Reveal>
             <div className="lp-section-head">
               <div className="lp-eyebrow">How it works</div>
-              <h2 className="lp-h2">From kickoff to climbing the ranks in three steps</h2>
+              <h2 className="lp-h2">From opening the link to having a blast in three steps</h2>
               <p className="lp-lead">
-                No tutorials, no setup. Open the site, pick a name, and the match is already playing alongside you.
+                No tutorials, no setup, no homework. Just open it minutes before kick-off and you're in.
               </p>
             </div>
           </Reveal>
 
           <div className="lp-steps">
             {[
-              { num: "01", title: "Open the site", Icon: Zap,
-                body: "Works on phone, tablet, PC, or projected on a TV. Continue as a guest or sign up to keep your XP across devices." },
-              { num: "02", title: "Predict as the match unfolds", Icon: Activity,
-                body: "When a shot or penalty fires, a 10-second window opens. Tap YES or NO. See the crowd's vote and the ML model's xG estimate." },
-              { num: "03", title: "Climb, chat, compete", Icon: Trophy,
-                body: "Right answers earn XP. Surprise goals earn triple. Chat with fans in real time. Unlock badges. Beat your friends in your squad." },
+              { num: "01", title: "Open the site, pick a name", Icon: Zap,
+                body: "Works on your phone, your laptop, even on the TV. Jump in as a guest or sign up to keep your points forever." },
+              { num: "02", title: "Predict as the match plays", Icon: Activity,
+                body: "When a shot or penalty kicks off, a quick 10-second window pops up. Tap YES or NO. See what other fans think while you wait." },
+              { num: "03", title: "Climb, chat, beat your mates", Icon: Trophy,
+                body: "Right answers earn points. Surprise goals earn triple. Chat with fans. Unlock badges. And finally settle who actually knows their football." },
             ].map((s, i) => (
               <Reveal key={s.num} delay={i * 120}>
                 <div className="lp-step">
@@ -409,17 +410,17 @@ export default function LandingPage() {
         <div className="lp-container">
           <Reveal>
             <div className="lp-section-head">
-              <div className="lp-eyebrow">The numbers behind it</div>
-              <h2 className="lp-h2">Not a demo — a working platform</h2>
+              <div className="lp-eyebrow">Built around real moments</div>
+              <h2 className="lp-h2">Quick. Loud. Slightly addictive.</h2>
             </div>
           </Reveal>
 
           <div className="lp-stats">
             {[
-              { num: 57763, suffix: "",  label: "Shots used to train our xG model" },
-              { num: 1569,  suffix: "",  label: "Professional matches analysed" },
-              { num: 8,     suffix: "",  label: "AWS services in production" },
-              { num: 100,   suffix: "%", label: "Serverless. From 10 fans to 10 M." },
+              { num: 10,  suffix: "s", label: "to lock in every prediction" },
+              { num: 5,   suffix: "",  label: "tiers from Rookie to Apex" },
+              { num: 12,  suffix: "",  label: "badges to unlock" },
+              { num: 90,  suffix: "'", label: "minutes of pure matchday" },
             ].map((s, i) => (
               <Reveal key={s.label} delay={i * 80}>
                 <div className="lp-stat">
@@ -437,24 +438,24 @@ export default function LandingPage() {
         <div className="lp-container">
           <Reveal>
             <div className="lp-section-head lp-section-head-left">
-              <div className="lp-eyebrow">Personalised AI</div>
-              <h2 className="lp-h2">One goal. Three reactions. Powered by Bedrock.</h2>
+              <div className="lp-eyebrow">Pick your vibe</div>
+              <h2 className="lp-h2">One goal. Your reaction.</h2>
               <p className="lp-lead">
-                Pick the persona that matches how you watch. Bedrock writes a unique commentary message
-                for every fan, every event. Casual viewers, loud die-hards and data nerds all get
-                something completely different.
+                Tell us how you watch and the live commentary shifts to match.
+                Same goal, three completely different feeds — pick the one that
+                actually sounds like you.
               </p>
             </div>
           </Reveal>
 
           <div className="lp-personas">
             {[
-              { name: "Casual",     tagline: "Fun, friendly, short. With emojis.",
+              { name: "Casual",     tagline: "Fun and friendly, quick takes.",
                 quote: "What a finish! Hamburg are on fire tonight!",          color: "#0891b2" },
-              { name: "Passionate", tagline: "Loud, dramatic, all-caps energy.",
+              { name: "Hyped",      tagline: "Loud, dramatic, full volume.",
                 quote: "YESSS!! GET IN!! That's what we live for!",            color: "#dc2626" },
-              { name: "Stats nerd", tagline: "Numbers, tactics, ML talk.",
-                quote: "Hamburg score from an xG of 0.34 — clinical conversion.", color: "#7c3aed" },
+              { name: "Tactical",   tagline: "Numbers, angles, deep cuts.",
+                quote: "Hamburg score from a tight angle — clinical finish.",  color: "#7c3aed" },
             ].map((p, i) => (
               <Reveal key={p.name} delay={i * 80}>
                 <div className="lp-persona" style={{ borderTopColor: p.color }}>
@@ -474,18 +475,18 @@ export default function LandingPage() {
           <div className="lp-split">
             <Reveal className="lp-split-text">
               <div className="lp-eyebrow">Watch-party mode</div>
-              <h2 className="lp-h2">Project it on the big screen</h2>
+              <h2 className="lp-h2">Turn your living room into a stadium</h2>
               <p className="lp-lead">
-                Open <code className="lp-code">/stadium</code> on any TV or projector. A huge live
-                scoreboard, top-3 podium, rolling event ticker, and a full-screen splash whenever
-                a goal hits the net. No login required.
+                Open one link on a TV, projector or big monitor. A huge live scoreboard,
+                the top fans on the podium, and dramatic goal alerts the moment something
+                happens. Friends on the couch, phones in hand, all playing along together.
               </p>
               <div className="lp-checklist">
                 {[
-                  "Designed for landscape 1920×1080 and beyond",
-                  "Fullscreen toggle for kiosks and bars",
-                  "Goal / penalty / VAR splash overlays",
-                  "Updates over the same live WebSocket as the app",
+                  "Works on any TV, projector or big monitor",
+                  "Goes fullscreen with one tap",
+                  "Massive alerts when a goal hits the net",
+                  "No login needed — just open the link",
                 ].map((c) => (
                   <div key={c} className="lp-check-item">
                     <span className="lp-check-dot" />
@@ -495,7 +496,7 @@ export default function LandingPage() {
               </div>
               <Link href="/stadium" className="lp-btn-primary lp-btn-md">
                 <Monitor size={16} strokeWidth={1.75} />
-                <span>Open stadium view</span>
+                <span>See watch-party mode</span>
                 <ArrowRight size={14} strokeWidth={2} />
               </Link>
             </Reveal>
@@ -543,22 +544,18 @@ export default function LandingPage() {
             <div className="lp-final-cta">
               <h2 className="lp-final-title">Ready to feel the match?</h2>
               <p className="lp-final-sub">
-                Free, instant, no install. Open it on your phone for the next Bundesliga kickoff
-                and find out what football feels like when you're actually in it.
+                Free, instant, no install. Grab your phone, grab some friends,
+                and turn the next match into something you'll actually remember.
               </p>
               <div className="lp-final-actions">
                 <Link href="/app" className="lp-btn-primary lp-btn-lg">
-                  <span>Enter the arena</span>
+                  <span>Start playing</span>
                   <ArrowRight size={16} strokeWidth={2} />
                 </Link>
-                <a
-                  href="https://github.com/pacyuzu16/connected-arena"
-                  target="_blank" rel="noopener noreferrer"
-                  className="lp-btn-ghost lp-btn-lg"
-                >
-                  <Code2 size={16} strokeWidth={1.75} />
-                  <span>View source</span>
-                </a>
+                <Link href="/stadium" className="lp-btn-ghost lp-btn-lg">
+                  <Monitor size={16} strokeWidth={1.75} />
+                  <span>Watch-party mode</span>
+                </Link>
               </div>
             </div>
           </Reveal>
@@ -572,36 +569,34 @@ export default function LandingPage() {
             <span className="lp-nav-mark">CA</span>
             <div>
               <div className="lp-footer-title">Connected Arena</div>
-              <div className="lp-footer-sub">A real-time multiplayer fan engagement platform.</div>
+              <div className="lp-footer-sub">Watch football. Predict. Compete. Free, forever.</div>
             </div>
           </div>
 
           <div className="lp-footer-cols">
             <div className="lp-footer-col">
-              <div className="lp-footer-col-head">Product</div>
-              <Link href="/app">Fan app</Link>
-              <Link href="/stadium">Stadium view</Link>
-              <Link href="/admin">Admin console</Link>
+              <div className="lp-footer-col-head">Play</div>
+              <Link href="/app">Open the arena</Link>
+              <Link href="/stadium">Watch-party mode</Link>
+              <Link href="/app#leaderboard">Live leaderboard</Link>
             </div>
             <div className="lp-footer-col">
-              <div className="lp-footer-col-head">Team</div>
+              <div className="lp-footer-col-head">Explore</div>
+              <a href="#features">What you'll do</a>
+              <a href="#how">How it works</a>
+              <a href="#stadium">Throw a watch party</a>
+            </div>
+            <div className="lp-footer-col">
+              <div className="lp-footer-col-head">Made by</div>
               <span>Carine UMUGABEKAZE</span>
               <span>ISHIMWE Ami Paradis</span>
               <span>CYUZUZO Pacifique</span>
             </div>
-            <div className="lp-footer-col">
-              <div className="lp-footer-col-head">Tech</div>
-              <span>AWS Lambda · DynamoDB</span>
-              <span>API Gateway · WebSockets</span>
-              <span>Amazon Bedrock · Cognito</span>
-            </div>
           </div>
         </div>
         <div className="lp-footer-bottom lp-container">
-          <span>© 2026 Connected Arena · AWS Sports AI Innovation Cup, Challenge 4</span>
-          <a href="https://github.com/pacyuzu16/connected-arena" target="_blank" rel="noopener noreferrer">
-            github.com/pacyuzu16/connected-arena
-          </a>
+          <span>© 2026 Connected Arena · Made for football fans, by football fans</span>
+          <Link href="/app">Start playing →</Link>
         </div>
       </footer>
     </div>
