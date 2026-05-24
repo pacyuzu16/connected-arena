@@ -22,6 +22,8 @@ import useQuests from "../../hooks/useQuests";
 import useSquad from "../../hooks/useSquad";
 import DailyQuestsCard from "../../components/DailyQuestsCard";
 import SquadPanel from "../../components/SquadPanel";
+import StadiumBadge from "../../components/StadiumBadge";
+import useVenue from "../../hooks/useVenue";
 import { useTheme } from "../../components/ThemeProvider";
 import { Home, Zap, Trophy, MessageSquare, User, Globe, UsersRound, Monitor } from "lucide-react";
 import { getTier } from "../../utils/constants";
@@ -363,6 +365,9 @@ export default function ArenaPage() {
   // ── User preferences (mute toggles + language) ─────────────────────────
   const { settings, update: updateSettings, reset: resetSettings } = useSettings();
 
+  // ── Active stadium context (from /venues/[code]) ───────────────────────
+  const { venue: activeVenue } = useVenue();
+
   // ── Sound effects (respects settings.sound toggle) ─────────────────────
   const { play: playSound } = useSounds(settings.sound);
 
@@ -645,6 +650,9 @@ export default function ArenaPage() {
           <span className="hdr-sb-team">BAY</span>
           <span className="hdr-sb-min">{matchMinute > 0 ? `${matchMinute}'` : "—"}</span>
         </div>
+
+        {/* Stadium badge — shown when the user entered via /venues */}
+        <StadiumBadge venue={activeVenue} />
 
         <div className="hdr-right">
           {myPlayer && <div className="hdr-level" title="Your level">Lv.{myPlayer.level || 1}</div>}

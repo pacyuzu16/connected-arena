@@ -195,7 +195,7 @@ export default function LandingPage() {
           <nav className="lp-nav-links">
             <a href="#features">Features</a>
             <a href="#how">How it works</a>
-            <a href="#stadium">Stadium</a>
+            <Link href="/venues">Stadiums</Link>
             <Link href="/admin" className="lp-nav-sub">Admin</Link>
           </nav>
 
@@ -221,7 +221,7 @@ export default function LandingPage() {
           <div className="lp-nav-mobile">
             <a href="#features"    onClick={() => setMobileOpen(false)}>Features</a>
             <a href="#how"         onClick={() => setMobileOpen(false)}>How it works</a>
-            <a href="#stadium"     onClick={() => setMobileOpen(false)}>Stadium</a>
+            <Link href="/venues"   onClick={() => setMobileOpen(false)}>Stadiums</Link>
             <Link href="/admin"    onClick={() => setMobileOpen(false)}>Admin</Link>
             <div className="lp-nav-mobile-divider" />
             <Link href="/app" className="lp-btn-primary lp-btn-block" onClick={() => setMobileOpen(false)}>
@@ -533,6 +533,65 @@ export default function LandingPage() {
                 </div>
               </div>
             </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════ STADIUMS PREVIEW ══════════════ */}
+      <section id="stadiums" className="lp-section lp-section-alt">
+        <div className="lp-container">
+          <Reveal>
+            <div className="lp-section-head">
+              <div className="lp-eyebrow">Stadiums</div>
+              <h2 className="lp-h2">Pick where you watch from</h2>
+              <p className="lp-lead">
+                Six legendary grounds, one tap to enter. Each stadium brings its own
+                atmosphere, fixture and crowd of fans to compete with. Scan a QR at the
+                actual stadium gate? You land here too.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="lp-stadiums">
+            {[
+              { code: "FORSTEREI", img: "/images/Stadion_An_der_Alten_Forsterei_1024x1024.jpg",
+                name: "Försterei", city: "Berlin · Germany", status: "live" },
+              { code: "YELLOW",    img: "/images/Dortmund_fans_in_the_Yellow_Wall_1024x1024.jpg",
+                name: "Yellow Wall", city: "Dortmund · Germany", status: "live" },
+              { code: "STJAMES",   img: "/images/St_James_Park_Newcastle_1024x1024.jpg",
+                name: "St. James' Park", city: "Newcastle · England", status: "next" },
+              { code: "CELTIC",    img: "/images/Celtic_Park_1024x1024.jpg",
+                name: "Celtic Park", city: "Glasgow · Scotland", status: "next" },
+              { code: "HSILES",    img: "/images/Estadio_Hernando_Siles_1024x1024.jpg",
+                name: "Hernando Siles", city: "La Paz · Bolivia", status: "next" },
+              { code: "STKHOLM",   img: "/images/3Arena_Stockholm_1024x1024.jpg",
+                name: "3Arena", city: "Stockholm · Sweden", status: "soon" },
+            ].map((s, i) => (
+              <Reveal key={s.code} delay={i * 50}>
+                <Link href={`/venues/${s.code}`} className="lp-stadium-tile">
+                  <div
+                    className="lp-stadium-tile-bg"
+                    style={{ backgroundImage: `url("${s.img}")` }}
+                    role="presentation"
+                  />
+                  <div className="lp-stadium-tile-shade" />
+                  <div className={`lp-stadium-tile-tag lp-stadium-tile-tag-${s.status}`}>
+                    {s.status === "live" ? "Live now" : s.status === "next" ? "Next match" : "Coming soon"}
+                  </div>
+                  <div className="lp-stadium-tile-body">
+                    <div className="lp-stadium-tile-name">{s.name}</div>
+                    <div className="lp-stadium-tile-city">{s.city}</div>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+
+          <div className="lp-stadiums-cta">
+            <Link href="/venues" className="lp-btn-primary lp-btn-md">
+              <span>Browse all stadiums</span>
+              <ArrowRight size={14} strokeWidth={2} />
+            </Link>
           </div>
         </div>
       </section>
