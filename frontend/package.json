@@ -12,7 +12,9 @@
   },
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node -e \"['.next','out'].forEach(p=>require('fs').rmSync(p,{recursive:true,force:true}))\"",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "clean": "node -e \"['.next','out','node_modules/.cache'].forEach(p=>require('fs').rmSync(p,{recursive:true,force:true}))\""
   }
 }
