@@ -13,6 +13,7 @@ import Link from "next/link";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { VENUES, LIVE_VENUES } from "../../data/venues";
 import VenueCard from "../../components/VenueCard";
+import AuthIndicator from "../../components/AuthIndicator";
 
 export default function VenuesPage() {
   return (
@@ -30,7 +31,9 @@ export default function VenuesPage() {
           <span className="venues-brand-name">Connected Arena</span>
         </Link>
 
-        <Link href="/app" className="venues-skip">Skip to arena →</Link>
+        <div className="venues-topbar-right">
+          <AuthIndicator />
+        </div>
       </header>
 
       {/* Hero */}

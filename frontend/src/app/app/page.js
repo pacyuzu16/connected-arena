@@ -678,9 +678,8 @@ export default function ArenaPage() {
             closePanel={closeNotif}
             dismiss={dismissNotif}
           />
-          <button className="profile-btn" onClick={toggleTheme} title="Toggle theme" style={{ fontSize: "16px" }}>
-            {theme === "dark" ? "☀️" : "🌙"}
-          </button>
+          {/* Theme toggle removed from header — it lives in the Profile tab
+              under "Appearance" so we don't show it twice. */}
           <button className="profile-btn hdr-profile-btn" onClick={() => setShowProfile(true)} title="Your profile">
             👤
           </button>

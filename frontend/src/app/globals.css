@@ -6723,7 +6723,7 @@ button:disabled,
   color: #f1f5f9;
 }
 
-/* Admin sidebar � Stadium View link */
+/* Admin sidebar � Stadium View link */
 .admin-stadium-link {
   display: inline-flex;
   align-items: center;
@@ -6756,7 +6756,10 @@ button:disabled,
   color: var(--text);
   background: var(--bg);
   min-height: 100vh;
-  overflow-x: hidden;
+  /* overflow-x intentionally NOT hidden — it can cause scroll lock
+     on Chrome/Windows when combined with sticky elements. Use overflow
+     on body only if absolutely required. */
+  position: relative;
 }
 
 .lp-container {
@@ -6772,9 +6775,10 @@ button:disabled,
 .reveal {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity, transform;
+  transition: opacity 500ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* No will-change — 30+ Reveal elements with will-change spawn 30+
+     GPU compositor layers which kills scroll perf on mid-tier laptops. */
 }
 .reveal-in {
   opacity: 1;
@@ -6894,15 +6898,15 @@ button:disabled,
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--bg) 80%, transparent);
-  backdrop-filter: saturate(160%) blur(14px);
-  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  /* Solid background — backdrop-filter caused scroll jank on Windows/Chrome.
+     Subtle transparency only when not scrolled, full opacity when scrolled. */
+  background: var(--bg);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--t), background var(--t);
+  transition: border-color var(--t), box-shadow var(--t);
 }
 .lp-nav.is-scrolled {
   border-bottom-color: var(--border);
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  box-shadow: var(--shadow-xs);
 }
 .lp-nav-inner {
   display: flex;
@@ -7965,7 +7969,9 @@ button:disabled,
 }
 
 /* ── Reduce overscroll bounce inside scrollable panels ─────────── */
-.admin-main, .ct-messages, .lp { overscroll-behavior: contain; }
+/* overscroll-behavior intentionally limited to scrollable inner panels.
+   Don't set it on .lp — it interferes with mousewheel scroll on Windows. */
+.admin-main, .ct-messages { overscroll-behavior: contain; }
 
 /* ── Smoother focus rings on touch devices ─────────────────────── */
 @media (pointer: coarse) {
@@ -8157,8 +8163,7 @@ button:disabled,
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
   position: sticky; top: 0;
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  backdrop-filter: saturate(160%) blur(12px);
+  background: var(--bg);
   z-index: 20;
 }
 .venues-back, .venues-skip {
@@ -8891,3 +8896,171 @@ button:disabled,
   .ven-team-bubble { width: 38px; height: 38px; font-size: 11px; }
   .ven-team-name { font-size: 13px; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AUTH INDICATOR  (profile pill + dropdown in nav)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.auth-ind-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.auth-ind-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              background    180ms cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: -0.005em;
+}
+.auth-ind-pill:hover {
+  border-color: var(--border-strong);
+  background: var(--surface2);
+}
+.auth-ind-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--surface);
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.auth-ind-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.auth-ind-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+}
+.auth-ind-chev {
+  color: var(--text-3);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.auth-ind-chev.is-open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.auth-ind-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 6px;
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+  animation: authIndOpen 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes authIndOpen {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.auth-ind-menu-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.auth-ind-menu-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--surface);
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.auth-ind-menu-info { min-width: 0; flex: 1; }
+.auth-ind-menu-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.auth-ind-menu-email {
+  font-size: 11px;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.auth-ind-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  letter-spacing: -0.005em;
+  transition: background 120ms ease, color 120ms ease;
+}
+.auth-ind-menu-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.auth-ind-menu-item svg { color: var(--text-3); }
+.auth-ind-menu-item:hover svg { color: var(--accent); }
+.auth-ind-menu-danger {
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 10px;
+  border-radius: 0 0 var(--r-sm) var(--r-sm);
+}
+.auth-ind-menu-danger:hover { color: var(--red); background: rgba(220, 38, 38, 0.06); }
+.auth-ind-menu-danger:hover svg { color: var(--red); }
+
+/* Mobile sizing for the pill */
+@media (max-width: 540px) {
+  .auth-ind-name { max-width: 80px; font-size: 12px; }
+  .auth-ind-tag { display: none; }
+  .auth-ind-pill { padding: 4px 10px 4px 4px; }
+  .auth-ind-avatar { width: 22px; height: 22px; font-size: 10px; }
+  .auth-ind-menu { min-width: 220px; right: -10px; }
+}
+
+/* Mobile nav AuthIndicator wrapper */
+.lp-nav-mobile-auth { padding: 8px 4px; }
+.lp-nav-mobile-auth .auth-ind-pill { width: 100%; justify-content: flex-start; }
+.lp-nav-mobile-auth .auth-ind-name { max-width: none; }

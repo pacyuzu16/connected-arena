@@ -26,6 +26,7 @@ import {
   Trophy, Brain, Sparkles, UsersRound, Target, Monitor,
   ArrowRight, PlayCircle, Zap, MessageSquare, Activity,
 } from "lucide-react";
+import AuthIndicator from "./AuthIndicator";
 
 /* ── Reveal-on-scroll wrapper (zero dependencies) ──────────────────── */
 function Reveal({ children, delay = 0, className = "" }) {
@@ -200,11 +201,7 @@ export default function LandingPage() {
           </nav>
 
           <div className="lp-nav-actions">
-            <Link href="/app" className="lp-btn-ghost lp-nav-signin">Sign in</Link>
-            <Link href="/app" className="lp-btn-primary lp-nav-cta">
-              <span>Get started</span>
-              <ArrowRight size={14} strokeWidth={2} />
-            </Link>
+            <AuthIndicator />
           </div>
 
           <button
@@ -224,10 +221,9 @@ export default function LandingPage() {
             <Link href="/venues"   onClick={() => setMobileOpen(false)}>Stadiums</Link>
             <Link href="/admin"    onClick={() => setMobileOpen(false)}>Admin</Link>
             <div className="lp-nav-mobile-divider" />
-            <Link href="/app" className="lp-btn-primary lp-btn-block" onClick={() => setMobileOpen(false)}>
-              <span>Get started</span>
-              <ArrowRight size={14} strokeWidth={2} />
-            </Link>
+            <div className="lp-nav-mobile-auth" onClick={() => setMobileOpen(false)}>
+              <AuthIndicator />
+            </div>
           </div>
         )}
       </header>
