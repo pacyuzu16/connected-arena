@@ -92,4 +92,34 @@ def lambda_handler(event, context):
         "players": leaderboard,
     })
 
+    # ── Also deliver chat history so users see what was said before they
+    #    joined. We piggy-back on the leaderboard request (fired by the
+    #    client on ws.onopen) because API Gateway WebSocket can't reliably
+    #    send messages back from inside the $connect Lambda — the
+    #    connection isn't "open" yet at that point and post_to_connection
+    #    fails with GoneException. By the time the client sends its first
+    #    leaderboard request the WebSocket is fully established. ───────
+    try:
+        room    = db.game_room_table().get_item(Key={"roomId": "main"}).get("Item", {})
+        history = room.get("chatHistory", []) or []
+        def _clean(m):
+            out = {
+                "id":      str(m.get("id", "")),
+                "name":    str(m.get("name", "")),
+                "message": str(m.get("message", "")),
+                "time":    int(m.get("time", 0)),
+            }
+            if m.get("xpEarned"):
+                try: out["xpEarned"] = int(m["xpEarned"])
+                except Exception: pass
+            return out
+        cleaned = [_clean(m) for m in history]
+        if cleaned:
+            ws.send_message(apigw, connection_id, {
+                "type":     "CHAT_HISTORY",
+                "messages": cleaned,    # chronological, oldest first
+            })
+    except Exception as exc:
+        print(f"could not send chat history: {exc}")
+
     return responses.ok()

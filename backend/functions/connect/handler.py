@@ -89,31 +89,12 @@ def lambda_handler(event, context):
     except Exception as e:
         print(f"Could not send ACCOUNT_STATUS to {connection_id}: {e}")
 
-    # ── Send the persisted chat history so this user can read what was said
-    #    before they joined. Stored on the GameRoom item as a bounded list. ──
-    try:
-        room   = db.game_room_table().get_item(Key={"roomId": "main"}).get("Item", {})
-        history = room.get("chatHistory", []) or []
-        # DynamoDB returns Decimal for numeric fields — convert back to ints
-        def _clean(m):
-            out = {
-                "id":      str(m.get("id", "")),
-                "name":    str(m.get("name", "")),
-                "message": str(m.get("message", "")),
-                "time":    int(m.get("time", 0)),
-            }
-            if m.get("xpEarned"):
-                try: out["xpEarned"] = int(m["xpEarned"])
-                except Exception: pass
-            return out
-        cleaned = [_clean(m) for m in history]
-        if cleaned:
-            ws.send_message(apigw, connection_id, {
-                "type":     "CHAT_HISTORY",
-                "messages": cleaned,    # chronological order, oldest first
-            })
-    except Exception as e:
-        print(f"Could not send CHAT_HISTORY to {connection_id}: {e}")
+    # Chat history is delivered by the leaderboard Lambda, not here.
+    # API Gateway can't reliably send back to a $connect-stage connection
+    # — it returns GoneException because the WebSocket isn't fully
+    # established yet. The client fires a leaderboard request right after
+    # ws.onopen, by which point the connection IS open, and that Lambda
+    # piggy-backs the CHAT_HISTORY message.
 
     print(f"Connected: {connection_id} → {player_id} ({player_name}) "
           f"suspended={suspended} admin={is_admin}")
