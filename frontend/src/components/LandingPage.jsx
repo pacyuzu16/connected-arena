@@ -27,6 +27,7 @@ import {
   ArrowRight, PlayCircle, Zap, MessageSquare, Activity,
 } from "lucide-react";
 import AuthIndicator from "./AuthIndicator";
+import Logo from "./Logo";
 
 /* ── Reveal-on-scroll wrapper (zero dependencies) ──────────────────── */
 function Reveal({ children, delay = 0, className = "" }) {
@@ -189,7 +190,7 @@ export default function LandingPage() {
       <header className={`lp-nav ${scrolled ? "is-scrolled" : ""}`}>
         <div className="lp-container lp-nav-inner">
           <Link href="/" className="lp-nav-brand" onClick={() => setMobileOpen(false)}>
-            <span className="lp-nav-mark">CA</span>
+            <Logo size={32} className="lp-nav-mark" />
             <span className="lp-nav-title">Connected Arena</span>
           </Link>
 
@@ -500,7 +501,7 @@ export default function LandingPage() {
             <Reveal delay={120} className="lp-split-visual">
               <div className="lp-stadium-mock">
                 <div className="lp-stadium-mock-bar">
-                  <span className="lp-stadium-mock-mark">CA</span>
+                  <Logo size={28} className="lp-stadium-mock-mark" />
                   <span className="lp-stadium-mock-live">
                     <span className="lp-stadium-mock-dot" /> LIVE · 247 FANS
                   </span>
@@ -621,7 +622,7 @@ export default function LandingPage() {
       <footer className="lp-footer">
         <div className="lp-container lp-footer-inner">
           <div className="lp-footer-brand">
-            <span className="lp-nav-mark">CA</span>
+            <Logo size={36} className="lp-nav-mark" />
             <div>
               <div className="lp-footer-title">Connected Arena</div>
               <div className="lp-footer-sub">Watch football. Predict. Compete. Free, forever.</div>

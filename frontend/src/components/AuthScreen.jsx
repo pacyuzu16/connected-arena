@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { signIn, signUp, confirmSignUp } from "../utils/cognito";
+import Logo from "./Logo";
 
 /**
  * AuthScreen
@@ -78,7 +79,7 @@ export default function AuthScreen({ onAuth, onGuest }) {
 
         {/* Header */}
         <div className="auth-header">
-          <div className="auth-logo auth-logo-mark">CA</div>
+          <Logo size={56} className="auth-logo auth-logo-mark" />
           <div className="auth-title">Connected Arena</div>
           <div className="auth-sub">
             {mode === "signin" && "Sign in to save your XP forever"}

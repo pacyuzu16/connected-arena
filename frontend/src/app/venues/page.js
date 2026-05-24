@@ -14,6 +14,7 @@ import { ArrowLeft, MapPin } from "lucide-react";
 import { VENUES, LIVE_VENUES } from "../../data/venues";
 import VenueCard from "../../components/VenueCard";
 import AuthIndicator from "../../components/AuthIndicator";
+import Logo from "../../components/Logo";
 
 export default function VenuesPage() {
   return (
@@ -27,7 +28,7 @@ export default function VenuesPage() {
         </Link>
 
         <Link href="/" className="venues-brand">
-          <span className="venues-brand-mark">CA</span>
+          <Logo size={32} className="venues-brand-mark" />
           <span className="venues-brand-name">Connected Arena</span>
         </Link>
 

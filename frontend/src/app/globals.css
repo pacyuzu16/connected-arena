@@ -5454,17 +5454,11 @@ button:disabled,
    LUCIDE ICONS + RECHARTS — Modern component refresh
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* ── Brand mark (replaces 🏟️) — minimal monogram in a square ── */
+/* ── Brand mark — stadium logo image, transparent background ── */
 .admin-brand-mark {
   width: 36px; height: 36px;
-  border-radius: 9px;
-  background: var(--text);
-  color: var(--surface);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.02em;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 /* ── Sidebar nav alignment with lucide ── */
@@ -5814,22 +5808,14 @@ button:disabled,
   gap: 6px;
 }
 
-/* Auth-screen monogram mark (replaces the emoji logo on login screens) */
+/* Auth-screen logo — stadium image, centered above the form */
 .auth-logo-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 16px;
-  border-radius: 14px;
-  background: var(--text);
-  color: var(--surface);
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.01em;
-  box-shadow: var(--shadow-sm);
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.10));
 }
 
 
@@ -6403,13 +6389,9 @@ button:disabled,
 }
 .stadium-brand-mark {
   width: 42px; height: 42px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #ea580c, #c2410c);
-  color: white;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
 }
 .stadium-brand-title {
   font-size: 14px; font-weight: 700;
@@ -6925,14 +6907,9 @@ button:disabled,
   letter-spacing: -0.012em;
 }
 .lp-nav-mark {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  background: var(--text);
-  color: var(--surface);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  object-fit: contain;
+  /* Sized via the Logo size prop — kept here only for fallback */
 }
 .lp-nav-title { font-size: 15px; }
 
@@ -7610,14 +7587,9 @@ button:disabled,
   margin-bottom: 24px;
 }
 .lp-stadium-mock-mark {
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #ea580c, #c2410c);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 10px;
-  font-weight: 800;
-  color: white;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
 }
 .lp-stadium-mock-live {
   display: inline-flex;
@@ -7938,7 +7910,7 @@ button:disabled,
 
   /* Auth screen on small screens — softer card */
   .auth-card            { padding: 28px 22px !important; border-radius: var(--r-lg) !important; }
-  .auth-logo-mark       { width: 48px; height: 48px; font-size: 19px; margin-bottom: 12px; }
+  .auth-logo-mark       { width: 56px; height: 56px; margin-bottom: 10px; }
   .auth-input           { font-size: 16px !important; /* prevents iOS zoom */ }
 }
 
@@ -8195,15 +8167,8 @@ button:disabled,
   font-size: 14px;
 }
 .venues-brand-mark {
-  width: 28px; height: 28px;
-  border-radius: 7px;
-  background: var(--text);
-  color: var(--surface);
-  display: inline-flex;
-  align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  object-fit: contain;
 }
 .venues-hero {
   max-width: 800px;
@@ -8528,15 +8493,9 @@ button:disabled,
   text-decoration: none;
 }
 .ven-brand-mark {
-  width: 28px; height: 28px;
-  border-radius: 7px;
-  background: white;
-  color: #0a0f1a;
-  display: inline-flex;
-  align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 .ven-main {
   display: flex;

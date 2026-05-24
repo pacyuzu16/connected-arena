@@ -7,6 +7,7 @@ import {
   ArrowLeft, ArrowRight, MapPin, Users, Radio,
   Clock, BellRing, AlertCircle, Trophy,
 } from "lucide-react";
+import Logo from "../../../components/Logo";
 
 const STORAGE_KEY = "arena-active-venue";
 
@@ -85,7 +86,7 @@ export default function VenueEntryClient({ venue }) {
           <span>All stadiums</span>
         </Link>
         <Link href="/" className="ven-brand">
-          <span className="ven-brand-mark">CA</span>
+          <Logo size={32} className="ven-brand-mark" />
           <span>Connected Arena</span>
         </Link>
         <Link href="/app" className="ven-skip">Skip to arena →</Link>

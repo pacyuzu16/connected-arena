@@ -23,6 +23,7 @@ import useSquad from "../../hooks/useSquad";
 import DailyQuestsCard from "../../components/DailyQuestsCard";
 import SquadPanel from "../../components/SquadPanel";
 import StadiumBadge from "../../components/StadiumBadge";
+import Logo from "../../components/Logo";
 import useVenue from "../../hooks/useVenue";
 import { useTheme } from "../../components/ThemeProvider";
 import { Home, Zap, Trophy, MessageSquare, User, Globe, UsersRound, Monitor } from "lucide-react";
@@ -635,11 +636,11 @@ export default function ArenaPage() {
       <header className="hdr">
         <button
           className="hdr-logo"
-          onClick={handleLeave}
+          onClick={() => { if (typeof window !== "undefined") window.location.href = "/"; }}
           title="Back to home"
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          style={{ background: "none", border: "none", cursor: "pointer", padding: 0, display: "inline-flex", alignItems: "center", gap: 8 }}
         >
-          <span>🏟️</span>
+          <Logo size={28} />
           <span>Connected Arena</span>
         </button>
 

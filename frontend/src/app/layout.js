@@ -11,10 +11,13 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Connected Arena 🏟️",
+  title: "Connected Arena",
   description: "Real-time multiplayer fan engagement — AWS Sports AI Innovation Cup 2026",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f97316'/><text y='.9em' font-size='72' x='50%25' text-anchor='middle' dominant-baseline='top'>🏟️</text></svg>",
+    icon: [
+      { url: "/images/stadium-emoji-clipart-md.png", type: "image/png" },
+    ],
+    apple: "/images/stadium-emoji-clipart-md.png",
   },
 };
 

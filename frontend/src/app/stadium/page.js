@@ -18,6 +18,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import Logo from "../../components/Logo";
 import {
   Radio, Users, Maximize2, Trophy, Activity, X,
 } from "lucide-react";
@@ -140,7 +141,7 @@ export default function StadiumPage() {
       {/* ── Top bar: brand + LIVE + fans + fullscreen ── */}
       <header className="stadium-topbar">
         <div className="stadium-brand">
-          <div className="stadium-brand-mark">CA</div>
+          <Logo size={42} className="stadium-brand-mark" />
           <div className="stadium-brand-text">
             <div className="stadium-brand-title">CONNECTED ARENA</div>
             <div className="stadium-brand-sub">STADIUM DISPLAY</div>

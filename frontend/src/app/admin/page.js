@@ -10,6 +10,7 @@ import {
   ArrowLeft, Copy, Check, KeyRound,
 } from "lucide-react";
 import AdminCharts from "../../components/AdminCharts";
+import Logo from "../../components/Logo";
 
 const HOME_TEAM  = "DFL-CLU-000001";
 const WS_URL     = process.env.NEXT_PUBLIC_WS_URL || "";
@@ -137,7 +138,7 @@ function AdminLogin({ onLogin }) {
       <div className="auth-card" style={{ maxWidth: 400 }}>
         {/* Header */}
         <div className="auth-header">
-          <div className="auth-logo auth-logo-mark">CA</div>
+          <Logo size={56} className="auth-logo auth-logo-mark" />
           <div className="auth-title">Admin Console</div>
           <div className="auth-sub">Sign in to manage Connected Arena</div>
         </div>
@@ -341,7 +342,7 @@ export default function AdminPage() {
       {/* ── Sidebar (collapsible on mobile) ── */}
       <aside className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="admin-sidebar-brand">
-          <div className="admin-brand-mark">CA</div>
+          <Logo size={36} className="admin-brand-mark" />
           <div>
             <div className="admin-sidebar-title">Connected Arena</div>
             <div className="admin-sidebar-sub">Admin Console</div>
