@@ -1,8 +1,12 @@
 """
 chat/handler.py
 ---------------
-Broadcasts a fan's chat message to every connected fan in real time.
-Awards XP for active chatters: +5 XP every 5 messages sent.
+Broadcasts a fan's chat message to every connected fan in real time
+AND persists it to DynamoDB so users joining later see the history.
+
+History is stored on the GameRoom item as a bounded list (`chatHistory`)
+capped at the last MAX_HISTORY messages. This avoids creating a new
+table while keeping the demo experience continuous.
 
 WebSocket message (client → server):
 {
@@ -14,22 +18,73 @@ WebSocket message (client → server):
 
 Broadcast to all fans:
 {
-  "type":       "CHAT_MESSAGE",
-  "id":         "conn123-1748000000000",
-  "name":       "GoalHunter",
-  "message":    "What a save!",
-  "time":       1748000000000,
-  "xpEarned":  5    ← only present when a milestone is hit
+  "type":     "CHAT_MESSAGE",
+  "id":       "conn123-1748000000000",
+  "name":     "GoalHunter",
+  "message":  "What a save!",
+  "time":     1748000000000,
+  "xpEarned": 5   ← only present when a milestone is hit
 }
 """
 
 import json
 import time
+from decimal import Decimal
 from arena import db, ws, responses
 
-MAX_LEN        = 200   # maximum message length
-XP_PER_MSGS    = 5     # award XP every N messages
-XP_REWARD      = 5     # XP per milestone
+ROOM_ID     = "main"
+MAX_LEN     = 200   # maximum message length
+XP_PER_MSGS = 5     # award XP every N messages
+XP_REWARD   = 5     # XP per milestone
+MAX_HISTORY = 100   # keep the most recent N messages on disk
+
+
+def append_to_history(message_item):
+    """
+    Append a chat message to the GameRoom.chatHistory list and trim to
+    the most recent MAX_HISTORY entries. Two DynamoDB round-trips —
+    fine for a hackathon demo, and never blocks the broadcast above.
+    """
+    table = db.game_room_table()
+
+    # Convert ms-timestamp int → Decimal for DynamoDB
+    safe_item = {
+        "id":       str(message_item["id"]),
+        "name":     str(message_item["name"]),
+        "message":  str(message_item["message"]),
+        "time":     Decimal(str(message_item["time"])),
+    }
+    if message_item.get("xpEarned"):
+        safe_item["xpEarned"] = Decimal(str(message_item["xpEarned"]))
+
+    try:
+        # 1. Append the new item
+        table.update_item(
+            Key={"roomId": ROOM_ID},
+            UpdateExpression=(
+                "SET chatHistory = list_append("
+                "  if_not_exists(chatHistory, :empty),"
+                "  :new"
+                ")"
+            ),
+            ExpressionAttributeValues={
+                ":empty": [],
+                ":new":   [safe_item],
+            },
+        )
+
+        # 2. Read back and trim if oversized (only when we'd exceed cap)
+        item = table.get_item(Key={"roomId": ROOM_ID}).get("Item", {})
+        history = item.get("chatHistory", []) or []
+        if len(history) > MAX_HISTORY:
+            trimmed = history[-MAX_HISTORY:]
+            table.update_item(
+                Key={"roomId": ROOM_ID},
+                UpdateExpression="SET chatHistory = :h",
+                ExpressionAttributeValues={":h": trimmed},
+            )
+    except Exception as e:
+        print(f"chat: failed to persist message: {e}")
 
 
 def lambda_handler(event, context):
@@ -77,17 +132,30 @@ def lambda_handler(event, context):
     except Exception as e:
         print(f"DB update error for {player_id}: {e}")
 
-    # ── Broadcast to all fans ────────────────────────────────────────────────
-    apigw   = ws.get_apigw_client(event)
+    # ── Build the message payload ────────────────────────────────────────────
+    msg_id  = f"{connection_id}-{int(time.time() * 1000)}"
+    msg_ts  = int(time.time() * 1000)
     payload = {
         "type":    "CHAT_MESSAGE",
-        "id":      f"{connection_id}-{int(time.time() * 1000)}",
+        "id":      msg_id,
         "name":    player_name,
         "message": message,
-        "time":    int(time.time() * 1000),
+        "time":    msg_ts,
     }
     if xp_earned:
         payload["xpEarned"] = xp_earned
 
+    # ── Persist to history BEFORE broadcasting so a race-condition where
+    #    a new user connects after the broadcast still sees the message ──
+    append_to_history({
+        "id":       msg_id,
+        "name":     player_name,
+        "message":  message,
+        "time":     msg_ts,
+        "xpEarned": xp_earned or None,
+    })
+
+    # ── Broadcast to all fans ────────────────────────────────────────────────
+    apigw = ws.get_apigw_client(event)
     ws.broadcast(apigw, db.connections_table(), payload)
     return responses.ok("sent")

@@ -254,12 +254,32 @@ export default function useWebSocket(playerName) {
             Math.abs(m.time - data.time) < 5000
           );
           if (isDupe) return prev;
+          // Also skip if the same id is already present (history echo)
+          if (prev.some(m => m.id === data.id)) return prev;
           return [
             { id: data.id, name: data.name, message: data.message, time: data.time, xpEarned: data.xpEarned },
             ...prev,
           ].slice(0, 100);
         });
         break;
+
+      case "CHAT_HISTORY": {
+        // Server sends chronological (oldest first); UI shows newest first.
+        // Merge with any locally-shown messages, dedupe by id, keep newest 100.
+        const incoming = (data.messages || []).map(m => ({
+          id:       m.id,
+          name:     m.name,
+          message:  m.message,
+          time:     m.time,
+          xpEarned: m.xpEarned,
+        }));
+        setChatMessages(prev => {
+          const seen = new Set(prev.map(m => m.id));
+          const merged = [...incoming.filter(m => !seen.has(m.id)).reverse(), ...prev];
+          return merged.slice(0, 100);
+        });
+        break;
+      }
       default:
         break;
     }
