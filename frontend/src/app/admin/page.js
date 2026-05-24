@@ -200,6 +200,19 @@ export default function AdminPage() {
   const [adminUser, setAdminUser]   = useState(null);  // null = checking, false = not authed
   const [view,      setView]        = useState("overview"); // sidebar section
   const [sidebarOpen, setSidebarOpen] = useState(false);   // mobile drawer state
+
+  // Mobile drawer UX: close on Escape, close when switching to desktop width
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onKey = (e) => { if (e.key === "Escape") setSidebarOpen(false); };
+    const onResize = () => { if (window.innerWidth > 900) setSidebarOpen(false); };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize",  onResize);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize",  onResize);
+    };
+  }, [sidebarOpen]);
   const [players,   setPlayers]     = useState([]);
   const [allUsers,  setAllUsers]    = useState([]);   // full list with suspended flag
   const [userSearch,setUserSearch]  = useState("");

@@ -9023,3 +9023,113 @@ button:disabled,
 .lp-nav-mobile-auth { padding: 8px 4px; }
 .lp-nav-mobile-auth .auth-ind-pill { width: 100%; justify-content: flex-start; }
 .lp-nav-mobile-auth .auth-ind-name { max-width: none; }
+
+/* -----------------------------------------------------------------------
+   ADMIN SIDEBAR — MOBILE ACCESS FIX
+   Two .admin-burger rules earlier in this file collide (one sets
+   display:none unconditionally, the other tries to show it inside a
+   max-width media query). This block — at the very end of the file —
+   wins source-order and guarantees the hamburger appears on phones.
+   ----------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  /* Layout collapses to single column */
+  .admin-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sidebar becomes a slide-in drawer */
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0; left: 0;
+    width: min(280px, 86vw);
+    height: 100vh;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-xl);
+    /* Allow scrolling inside the drawer if content is tall */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop appears whenever the drawer is open */
+  .admin-sidebar-backdrop {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 60;
+    animation: adminBackdropIn 200ms ease;
+  }
+  @keyframes adminBackdropIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* THIS is the bug fix: the hamburger button MUST be visible */
+  .admin-burger {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    color: var(--text);
+    transition: background var(--t), border-color var(--t);
+    flex-shrink: 0;
+  }
+  .admin-burger:hover {
+    background: var(--surface2);
+    border-color: var(--border-strong);
+  }
+  .admin-burger:active {
+    transform: scale(0.96);
+  }
+
+  /* Top bar gets a touch tighter on phones so the burger fits */
+  .admin-topbar {
+    padding: 10px 14px !important;
+    gap: 8px !important;
+  }
+  .admin-topbar-title {
+    font-size: 14px !important;
+    gap: 8px !important;
+  }
+  .admin-topbar-title span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .admin-topbar-right {
+    flex-shrink: 0;
+  }
+  .admin-ws-status {
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+  }
+  /* Hide the connection text on very narrow screens, keep the dot */
+  @media (max-width: 380px) {
+    .admin-ws-status span:not(.admin-ws-dot) { display: none; }
+    .admin-ws-status { padding: 5px; }
+  }
+
+  /* Lock background scroll while drawer is open (prevent bleed-through) */
+  body:has(.admin-sidebar.open) {
+    overflow: hidden;
+  }
+}
+
+/* Make sure the burger stays HIDDEN on tablet/desktop */
+@media (min-width: 901px) {
+  .admin-burger { display: none !important; }
+  .admin-sidebar-backdrop { display: none !important; }
+}
