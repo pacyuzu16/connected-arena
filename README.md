@@ -139,7 +139,7 @@ Re-enables the EventBridge scheduler so events emit automatically every minute a
 
 ## The team
 
-| Name |
+| Names |
 |------|
 | Carine UMUGABEKAZE |
 | ISHIMWE Ami Paradis |
