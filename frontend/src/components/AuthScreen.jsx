@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import dynamic from "next/dynamic";
+import { ArrowLeft, Ticket } from "lucide-react";
 import { signIn, signUp, confirmSignUp } from "../utils/cognito";
 import Logo from "./Logo";
+
+// Lazy-load the QR scanner — pulls in html5-qrcode only when the user
+// taps "Scan ticket", keeping the initial auth-screen bundle slim.
+const TicketScan = dynamic(() => import("./TicketScan"), { ssr: false });
 
 /**
  * AuthScreen
@@ -15,8 +20,12 @@ import Logo from "./Logo";
  * Props:
  *   onAuth(result)  — called with { jwt, sub, email, name } on success
  *   onGuest()       — called when user clicks "Continue as Guest"
+ *   onTicket(t)     — optional: { venue, seat, name } from a scanned/typed
+ *                     match-ticket QR. If omitted, falls back to onGuest()
+ *                     with the ticket holder's name.
  */
-export default function AuthScreen({ onAuth, onGuest }) {
+export default function AuthScreen({ onAuth, onGuest, onTicket }) {
+  const [showScan, setShowScan] = useState(false);
   const [mode, setMode]         = useState("signin"); // signin | signup | verify
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
@@ -169,17 +178,43 @@ export default function AuthScreen({ onAuth, onGuest }) {
           </form>
         )}
 
-        {/* Guest option */}
-        <div className="auth-guest-wrap">
+        {/* Guest + Ticket options — both passwordless entry paths */}
+        <div className="auth-alt-wrap">
           <button className="auth-guest-btn" onClick={onGuest} disabled={loading}>
             Continue as Guest
           </button>
+          <button
+            type="button"
+            className="auth-ticket-btn"
+            onClick={() => setShowScan(true)}
+            disabled={loading}
+          >
+            <Ticket size={15} strokeWidth={1.75} />
+            <span>Scan match ticket</span>
+          </button>
           <div className="auth-guest-note">
-            Guest progress is saved on this device only
+            Guest progress saves to this device · Ticket scan lands you in your stadium
           </div>
         </div>
 
       </div>
+
+      {/* QR ticket scanner overlay (lazy-loaded) */}
+      {showScan && (
+        <TicketScan
+          onClose={() => setShowScan(false)}
+          onTicketScanned={(t) => {
+            setShowScan(false);
+            if (onTicket) {
+              onTicket(t);
+            } else if (onGuest) {
+              // Graceful fallback: enter as a guest using the ticket-holder's name
+              const fallbackName = t.name || (t.seat ? `Seat ${t.seat}` : "Stadium Guest");
+              onGuest(fallbackName, "casual", t.venue || null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

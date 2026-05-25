@@ -199,6 +199,14 @@ function AdminLogin({ onLogin }) {
 export default function AdminPage() {
   const [adminUser, setAdminUser]   = useState(null);  // null = checking, false = not authed
   const [view,      setView]        = useState("overview"); // sidebar section
+
+  // Safety: if a user's persisted state somehow points at a view that no
+  // longer exists (e.g. "auth" after we removed it), bounce them to Overview
+  // so they never see a blank panel.
+  useEffect(() => {
+    const valid = ["overview", "users", "leaderboard", "match"];
+    if (!valid.includes(view)) setView("overview");
+  }, [view]);
   const [sidebarOpen, setSidebarOpen] = useState(false);   // mobile drawer state
 
   // Mobile drawer UX: close on Escape, close when switching to desktop width
@@ -345,7 +353,8 @@ export default function AdminPage() {
     { id: "users",      Icon: Users,           label: "User Management" },
     { id: "leaderboard",Icon: Trophy,          label: "Leaderboard"     },
     { id: "match",      Icon: Activity,        label: "Match Status"    },
-    { id: "auth",       Icon: Shield,          label: "Identity & Auth" },
+    // "Identity & Auth Strategy" removed — was dev-facing content, not useful
+    // to an admin moderator. The strategy lives in the project README instead.
   ];
   const currentNav = NAV.find(n => n.id === view) || NAV[0];
 
@@ -574,50 +583,9 @@ export default function AdminPage() {
         {/* ============ END LEADERBOARD ============ */}
 
 
-        {/* ============ IDENTITY & AUTH ============ */}
-        {view === "auth" && (
-        <div className="admin-card">
-          <div className="admin-card-hdr"><Shield size={16} strokeWidth={1.75} /> Identity &amp; Auth Strategy</div>
-          <div className="admin-auth-grid">
-            <div className="admin-auth-item current">
-              <div className="admin-auth-badge">LIVE ✅</div>
-              <div className="admin-auth-name">Amazon Cognito — Email / Password</div>
-              <div className="admin-auth-desc">
-                Cognito User Pool with email+password auth. JWT token passed to WebSocket on connect.
-                Backend uses the <code>sub</code> claim as the permanent playerId — XP and rank survive
-                any number of refreshes or reconnects.
-              </div>
-            </div>
-            <div className="admin-auth-item current">
-              <div className="admin-auth-badge">LIVE ✅</div>
-              <div className="admin-auth-name">Guest Mode (localStorage)</div>
-              <div className="admin-auth-desc">
-                Fans who skip login get a random playerId stored in localStorage.
-                XP persists on the same device. Upgradeable to a full Cognito account at any time.
-              </div>
-            </div>
-            <div className="admin-auth-item">
-              <div className="admin-auth-badge">PHASE 2</div>
-              <div className="admin-auth-name">Google / Social OAuth</div>
-              <div className="admin-auth-desc">
-                Add Google as an identity provider in Cognito Console. The frontend code is already
-                written — <code>getGoogleOAuthUrl()</code> and token exchange are in place.
-              </div>
-              <div className="admin-auth-status planned">🔵 Planned</div>
-            </div>
-            <div className="admin-auth-item">
-              <div className="admin-auth-badge">PHASE 3</div>
-              <div className="admin-auth-name">Stadium QR / NFC + Wearable</div>
-              <div className="admin-auth-desc">
-                Scan match ticket at turnstile → auto-login with physical attendance linked to
-                digital profile. Smart wearables: tap YES/NO on wrist during prediction windows.
-              </div>
-              <div className="admin-auth-status vision">🟠 North Star</div>
-            </div>
-          </div>
-        </div>
-        )}
-        {/* ============ END IDENTITY & AUTH ============ */}
+        {/* Identity & Auth Strategy view removed — was developer-facing
+            content that admins (who are moderators, not engineers) didn't
+            need to see. The platform's auth roadmap lives in the README. */}
 
 
         {/* ============ USER MANAGEMENT ============ */}

@@ -9210,3 +9210,397 @@ button:disabled,
   .ct-rules-text   { font-size: 11px; }
   .ct-monitor-hint { font-size: 10px; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TICKET SCAN  (QR ticket login)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Full-screen overlay so the camera can take the centre of attention */
+.ts-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10, 15, 26, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  animation: tsFadeIn 200ms ease;
+  font-family: var(--font-sans);
+  color: #f1f5f9;
+}
+@keyframes tsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.ts-shell {
+  width: 100%;
+  max-width: 460px;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #111827 0%, #0a0f1a 100%);
+  border: 1px solid #1f2a3d;
+  border-radius: var(--r-lg);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+  margin: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top bar */
+.ts-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ts-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--r-md);
+  color: #cbd5e1;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.ts-back:hover {
+  background: rgba(255, 255, 255, 0.10);
+  color: white;
+}
+.ts-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: white;
+}
+.ts-title svg { color: var(--accent); }
+
+/* Mode tabs */
+.ts-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 16px 14px 0;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--r-md);
+}
+.ts-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+}
+.ts-tab:hover { color: white; }
+.ts-tab.active {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+
+/* Camera region */
+.ts-camera-wrap {
+  margin: 16px 14px;
+  position: relative;
+}
+.ts-camera-region {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #050810;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+/* html5-qrcode injects its own video element — make it fill */
+.ts-camera-region video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: var(--r-lg);
+}
+.ts-camera-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  background: #050810;
+  border-radius: var(--r-lg);
+}
+.ts-camera-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 12px;
+  line-height: 1.5;
+  padding: 0 4px;
+}
+
+/* Manual entry */
+.ts-manual {
+  margin: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ts-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+.ts-input {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: white;
+  border-radius: var(--r-md);
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  outline: none;
+  text-transform: uppercase;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.ts-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.18);
+}
+.ts-format-hint {
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+.ts-format-hint code {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: #fde68a;
+  font-size: 11px;
+}
+
+/* Error / floating error */
+.ts-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fca5a5;
+  background: rgba(220, 38, 38, 0.10);
+  border: 1px solid rgba(220, 38, 38, 0.28);
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+}
+.ts-error-floating {
+  margin: 0 14px 12px;
+}
+
+/* CTAs */
+.ts-cta-primary {
+  margin-top: 4px;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: all var(--t);
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.22);
+}
+.ts-cta-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(234, 88, 12, 0.32);
+}
+.ts-cta-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.ts-cta-link {
+  margin-top: 2px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: color var(--t);
+}
+.ts-cta-link:hover { color: white; }
+.ts-cta-ghost {
+  margin-top: 6px;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #cbd5e1;
+  border-radius: var(--r-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.ts-cta-ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: white;
+}
+
+/* Confirmation screen */
+.ts-confirm {
+  padding: 24px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.ts-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(5, 150, 105, 0.18);
+  color: #34d399;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: tsPop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tsPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.ts-confirm-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  color: white;
+}
+.ts-confirm-meta {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-md);
+  padding: 4px 12px;
+}
+.ts-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ts-meta-row:last-child { border-bottom: none; }
+.ts-meta-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+.ts-meta-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+}
+
+.ts-confirm .ts-cta-primary {
+  width: 100%;
+  margin-top: 8px;
+}
+.ts-confirm .ts-cta-ghost {
+  width: 100%;
+}
+
+.ts-footnote {
+  padding: 14px 18px 18px;
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ── New auth-screen group: guest + ticket buttons side-by-side on tablet+ */
+.auth-alt-wrap {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.auth-ticket-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: all var(--t);
+  box-shadow: var(--shadow-xs);
+}
+.auth-ticket-btn:hover:not(:disabled) {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+.auth-ticket-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.auth-ticket-btn svg { color: var(--accent); }
+
+@media (max-width: 540px) {
+  .ts-shell { margin: 0; max-height: 100vh; border-radius: 0; }
+  .ts-input { font-size: 16px; }   /* prevents iOS zoom */
+  .ts-confirm-title { font-size: 18px; }
+}

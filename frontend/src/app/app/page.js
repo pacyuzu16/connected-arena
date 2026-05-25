@@ -533,6 +533,25 @@ export default function ArenaPage() {
     setAuthUser(false);
   };
 
+  // Ticket QR scan: pre-fills name + persona + venue, skips JoinScreen entirely
+  // so the user lands straight in the arena. Mirrors the brief's "stadium
+  // turnstile QR → auto-login" north-star touchpoint.
+  const handleTicket = (ticket) => {
+    if (!ticket) return;
+    const ticketName = (ticket.name && ticket.name.trim())
+                    || (ticket.seat ? `Seat ${ticket.seat}` : "Stadium Guest");
+    const persona = "passionate"; // people at the actual stadium are loud fans
+    localStorage.setItem("arena-player-name",    ticketName);
+    localStorage.setItem("arena-player-persona", persona);
+    if (ticket.venue) {
+      localStorage.setItem("arena-active-venue", ticket.venue.toUpperCase());
+    }
+    setAuthUser(false);
+    setPlayerName(ticketName);
+    setJoined(true);
+    connect(ticketName, persona, null);
+  };
+
   const handleJoin = (name, persona) => {
     localStorage.setItem("arena-player-name",    name);
     localStorage.setItem("arena-player-persona", persona);
@@ -592,7 +611,7 @@ export default function ArenaPage() {
       return <JoinScreen onJoin={handleJoin} cognitoName={authUser.name} />;
     }
     // New visitor — show login/signup
-    return <AuthScreen onAuth={handleAuth} onGuest={handleGuest} />;
+    return <AuthScreen onAuth={handleAuth} onGuest={handleGuest} onTicket={handleTicket} />;
   }
 
   const fullPlayer = myPlayer || {
