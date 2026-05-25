@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PERSONAS } from "../utils/constants";
+import Logo from "./Logo";
 
 export default function JoinScreen({ onJoin, cognitoName }) {
   const [playerName, setPlayerName] = useState(cognitoName || "");
@@ -14,7 +15,7 @@ export default function JoinScreen({ onJoin, cognitoName }) {
   return (
     <div className="join-wrap">
       <div className="join-card">
-        <div className="join-logo">🏟️</div>
+        <Logo size={64} className="join-logo" />
         <h1 className="join-title">Connected Arena</h1>
         <p className="join-sub">Real-time multiplayer fan engagement</p>
 

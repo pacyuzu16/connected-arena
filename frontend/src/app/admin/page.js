@@ -295,7 +295,7 @@ export default function AdminPage() {
   if (adminUser === null) {
     return (
       <div className="arena-loading">
-        <div className="arena-loading-logo">⚽</div>
+        <Logo size={56} className="arena-loading-logo" />
         <div className="arena-loading-text">Loading…</div>
       </div>
     );

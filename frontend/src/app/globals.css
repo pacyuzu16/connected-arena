@@ -187,7 +187,7 @@ button, input, textarea, select {
   text-align: center;
 }
 
-.join-logo  { font-size: 68px; line-height: 1; margin-bottom: 12px; }
+.join-logo  { display: block; margin: 0 auto 14px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.10)); }
 .join-title { font-size: 26px; font-weight: 800; color: var(--accent); letter-spacing: -0.4px; }
 .join-sub   { color: var(--text-2); font-size: 14px; margin: 6px 0 32px; }
 
@@ -2316,7 +2316,7 @@ button, input, textarea, select {
   background: var(--bg);
   gap: 12px;
 }
-.arena-loading-logo { font-size: 40px; animation: pulse 1.2s ease-in-out infinite; }
+.arena-loading-logo { width: 56px; height: 56px; object-fit: contain; animation: pulse 1.2s ease-in-out infinite; }
 .arena-loading-text { font-size: 14px; color: var(--text-3); }
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -9025,10 +9025,10 @@ button:disabled,
 .lp-nav-mobile-auth .auth-ind-name { max-width: none; }
 
 /* -----------------------------------------------------------------------
-   ADMIN SIDEBAR — MOBILE ACCESS FIX
+   ADMIN SIDEBAR ï¿½ MOBILE ACCESS FIX
    Two .admin-burger rules earlier in this file collide (one sets
    display:none unconditionally, the other tries to show it inside a
-   max-width media query). This block — at the very end of the file —
+   max-width media query). This block ï¿½ at the very end of the file ï¿½
    wins source-order and guarantees the hamburger appears on phones.
    ----------------------------------------------------------------------- */
 

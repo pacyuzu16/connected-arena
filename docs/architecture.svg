@@ -1,121 +1,274 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-  <!-- Background -->
-  <rect width="900" height="620" fill="#0b1120" rx="16"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <!-- ════════════════════════════════════════════════════════════════
+       Connected Arena — AWS Architecture
+       Refreshed 2026 — minimal, two-tone (light surface + accent orange)
+       ════════════════════════════════════════════════════════════════ -->
 
-  <!-- Title -->
-  <text x="450" y="38" text-anchor="middle" fill="#f97316" font-size="20" font-weight="800">🏟️ Connected Arena — Architecture</text>
-  <text x="450" y="58" text-anchor="middle" fill="#94a3b8" font-size="12">AWS Sports AI Innovation Cup 2026 · eu-central-1</text>
-
-  <!-- AWS boundary -->
-  <rect x="20" y="72" width="860" height="530" fill="none" stroke="#1e3150" stroke-width="1.5" rx="12" stroke-dasharray="6,3"/>
-  <text x="36" y="90" fill="#475569" font-size="11">AWS Cloud (eu-central-1)</text>
-
-  <!-- ── Row 1: Data sources + Scheduler + Frontend ── -->
-
-  <!-- S3 XML Data -->
-  <rect x="44" y="104" width="130" height="64" fill="#131f35" stroke="#1e3150" rx="10"/>
-  <text x="109" y="128" text-anchor="middle" fill="#f59e0b" font-size="20">🪣</text>
-  <text x="109" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">S3</text>
-  <text x="109" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">Events_Anonym.xml</text>
-
-  <!-- EventBridge -->
-  <rect x="210" y="104" width="130" height="64" fill="#131f35" stroke="#1e3150" rx="10"/>
-  <text x="275" y="128" text-anchor="middle" fill="#8b5cf6" font-size="20">⏰</text>
-  <text x="275" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">EventBridge</text>
-  <text x="275" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">rate(1 minute)</text>
-
-  <!-- CloudFront + S3 Frontend -->
-  <rect x="560" y="104" width="160" height="64" fill="#131f35" stroke="#1e3150" rx="10"/>
-  <text x="640" y="128" text-anchor="middle" fill="#06b6d4" font-size="20">🌐</text>
-  <text x="640" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">CloudFront + S3</text>
-  <text x="640" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">React SPA hosting</text>
-
-  <!-- React Fan -->
-  <rect x="750" y="104" width="120" height="64" fill="#131f35" stroke="#f97316" stroke-width="1.5" rx="10"/>
-  <text x="810" y="128" text-anchor="middle" fill="#f97316" font-size="20">👥</text>
-  <text x="810" y="148" text-anchor="middle" fill="#f1f5f9" font-size="12" font-weight="700">Fans</text>
-  <text x="810" y="162" text-anchor="middle" fill="#94a3b8" font-size="10">React App</text>
-
-  <!-- ── Row 2: Lambda functions ── -->
-
-  <!-- parse_events.py -->
-  <rect x="44" y="228" width="130" height="56" fill="#131f35" stroke="#1e3150" rx="10"/>
-  <text x="109" y="252" text-anchor="middle" fill="#f1f5f9" font-size="11" font-weight="700">parse_events.py</text>
-  <text x="109" y="268" text-anchor="middle" fill="#94a3b8" font-size="10">local script</text>
-  <text x="109" y="280" text-anchor="middle" fill="#94a3b8" font-size="10">XML → DynamoDB</text>
-
-  <!-- EventEmitter Lambda -->
-  <rect x="210" y="220" width="130" height="72" fill="#1a2a44" stroke="#8b5cf6" stroke-width="1.5" rx="10"/>
-  <text x="275" y="244" text-anchor="middle" fill="#8b5cf6" font-size="11" font-weight="700">λ EventEmitter</text>
-  <text x="275" y="260" text-anchor="middle" fill="#94a3b8" font-size="10">reads MatchEvents</text>
-  <text x="275" y="274" text-anchor="middle" fill="#94a3b8" font-size="10">scores predictions</text>
-  <text x="275" y="288" text-anchor="middle" fill="#94a3b8" font-size="10">invokes Broadcast</text>
-
-  <!-- Broadcast Lambda -->
-  <rect x="380" y="220" width="130" height="72" fill="#1a2a44" stroke="#10b981" stroke-width="1.5" rx="10"/>
-  <text x="445" y="244" text-anchor="middle" fill="#10b981" font-size="11" font-weight="700">λ Broadcast</text>
-  <text x="445" y="260" text-anchor="middle" fill="#94a3b8" font-size="10">sends MATCH_EVENT</text>
-  <text x="445" y="274" text-anchor="middle" fill="#94a3b8" font-size="10">to all connections</text>
-  <text x="445" y="288" text-anchor="middle" fill="#94a3b8" font-size="10">cleans stale conns</text>
-
-  <!-- Bedrock Commentary Lambda -->
-  <rect x="550" y="220" width="150" height="72" fill="#1a2a44" stroke="#f97316" stroke-width="1.5" rx="10"/>
-  <text x="625" y="244" text-anchor="middle" fill="#f97316" font-size="11" font-weight="700">λ BedrockCommentary</text>
-  <text x="625" y="260" text-anchor="middle" fill="#94a3b8" font-size="10">Claude Haiku 4.5 EU</text>
-  <text x="625" y="274" text-anchor="middle" fill="#94a3b8" font-size="10">persona-aware prompts</text>
-  <text x="625" y="288" text-anchor="middle" fill="#94a3b8" font-size="10">AI_COMMENTARY msg</text>
-
-  <!-- ── Row 3: WebSocket API ── -->
-  <rect x="44" y="352" width="726" height="72" fill="#131f35" stroke="#3b82f6" stroke-width="1.5" rx="10"/>
-  <text x="407" y="376" text-anchor="middle" fill="#3b82f6" font-size="13" font-weight="700">API Gateway WebSocket API</text>
-  <text x="120" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">$connect</text>
-  <text x="240" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">$disconnect</text>
-  <text x="360" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">predict</text>
-  <text x="480" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">leaderboard</text>
-  <text x="600" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">commentary</text>
-  <text x="720" y="400" text-anchor="middle" fill="#94a3b8" font-size="10">prod stage</text>
-
-  <!-- ── Row 4: DynamoDB ── -->
-  <rect x="44" y="484" width="726" height="72" fill="#131f35" stroke="#eab308" stroke-width="1.5" rx="10"/>
-  <text x="407" y="508" text-anchor="middle" fill="#eab308" font-size="13" font-weight="700">DynamoDB (PAY_PER_REQUEST)</text>
-  <text x="120" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">Connections</text>
-  <text x="240" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">Players</text>
-  <text x="360" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">Predictions</text>
-  <text x="480" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">MatchEvents</text>
-  <text x="600" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">GameRoom</text>
-  <text x="720" y="534" text-anchor="middle" fill="#94a3b8" font-size="10">TTL on Connections</text>
-
-  <!-- ── Arrows ── -->
-  <!-- S3 → parse_events -->
-  <line x1="109" y1="168" x2="109" y2="228" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- EventBridge → EventEmitter -->
-  <line x1="275" y1="168" x2="275" y2="220" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- EventEmitter → Broadcast -->
-  <line x1="340" y1="256" x2="380" y2="256" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- EventEmitter → BedrockCommentary -->
-  <path d="M 340 270 Q 445 270 550 270" fill="none" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- Broadcast → WebSocket API -->
-  <line x1="445" y1="292" x2="445" y2="352" stroke="#10b981" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- BedrockCommentary → WebSocket API -->
-  <line x1="625" y1="292" x2="625" y2="352" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- WebSocket API → DynamoDB -->
-  <line x1="407" y1="424" x2="407" y2="484" stroke="#eab308" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- Fans ↔ WebSocket API (bidirectional) -->
-  <line x1="810" y1="168" x2="810" y2="340" stroke="#f97316" stroke-width="1.5"/>
-  <line x1="810" y1="340" x2="770" y2="388" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- CloudFront → Fans -->
-  <line x1="720" y1="136" x2="750" y2="136" stroke="#06b6d4" stroke-width="1.5" marker-end="url(#arr)"/>
-  <!-- EventEmitter → DynamoDB (reads MatchEvents) -->
-  <path d="M 275 292 L 275 460 L 407 460 L 407 484" fill="none" stroke="#475569" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
-
-  <!-- Arrow marker -->
   <defs>
-    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#475569"/>
+    <!-- Arrow markers — neutral for control flow, accent for hot path -->
+    <marker id="arrowN" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrowA" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ea580c"/>
     </marker>
   </defs>
 
-  <!-- Lambda layer badge -->
-  <rect x="44" y="580" width="200" height="24" fill="#131f35" stroke="#1e3150" rx="6"/>
-  <text x="144" y="596" text-anchor="middle" fill="#94a3b8" font-size="10">🔧 arena layer: ws · db · responses (all λ)</text>
+  <!-- ═══ Page background ═══ -->
+  <rect width="1200" height="820" fill="#f8fafc"/>
+
+  <!-- ═══ Header ═══ -->
+  <g transform="translate(40, 36)">
+    <!-- Brand mark — orange rounded square with "CA" -->
+    <rect x="0" y="0" width="44" height="44" rx="11" fill="#ea580c"/>
+    <text x="22" y="29" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="800" letter-spacing="0.04em">CA</text>
+
+    <text x="60" y="22" fill="#0f172a" font-size="20" font-weight="700" letter-spacing="-0.015em">Connected Arena</text>
+    <text x="60" y="40" fill="#64748b" font-size="12" font-weight="500">AWS Architecture · eu-central-1 · 100% serverless</text>
+  </g>
+
+  <!-- Live tag on the right -->
+  <g transform="translate(1080, 50)">
+    <rect x="0" y="0" width="80" height="22" rx="11" fill="#059669"/>
+    <circle cx="11" cy="11" r="3" fill="#ffffff"/>
+    <text x="22" y="15" fill="#ffffff" font-size="10" font-weight="700" letter-spacing="0.10em">LIVE · PROD</text>
+  </g>
+
+  <!-- ═══ AWS Cloud boundary ═══ -->
+  <rect x="40" y="100" width="1120" height="680" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" rx="14" stroke-dasharray="6,4"/>
+  <text x="56" y="122" fill="#94a3b8" font-size="11" font-weight="600" letter-spacing="0.04em">AWS CLOUD · eu-central-1</text>
+
+  <!-- ═══════════════════════ ROW 1 — CLIENTS ═══════════════════════ -->
+  <g transform="translate(60, 140)">
+    <text x="0" y="14" fill="#64748b" font-size="11" font-weight="600" letter-spacing="0.06em">CLIENTS</text>
+
+    <!-- Fan App -->
+    <g transform="translate(0, 24)">
+      <rect width="240" height="80" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <rect x="0" y="0" width="4" height="80" rx="2" fill="#ea580c"/>
+      <text x="20" y="28" fill="#0f172a" font-size="14" font-weight="700">Fan Web App</text>
+      <text x="20" y="46" fill="#64748b" font-size="11">Next.js · React · phone/tablet/desktop</text>
+      <text x="20" y="62" fill="#64748b" font-size="11">/, /app, /venues, /venues/[code]</text>
+      <text x="20" y="76" fill="#64748b" font-size="11">Persona, missions, squads, chat</text>
+    </g>
+
+    <!-- Stadium View -->
+    <g transform="translate(260, 24)">
+      <rect width="240" height="80" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <rect x="0" y="0" width="4" height="80" rx="2" fill="#ea580c"/>
+      <text x="20" y="28" fill="#0f172a" font-size="14" font-weight="700">Stadium / Watch-Party</text>
+      <text x="20" y="46" fill="#64748b" font-size="11">/stadium · big-screen mode</text>
+      <text x="20" y="62" fill="#64748b" font-size="11">No auth · TV/projector layout</text>
+      <text x="20" y="76" fill="#64748b" font-size="11">Live podium · goal splashes</text>
+    </g>
+
+    <!-- Admin Console -->
+    <g transform="translate(520, 24)">
+      <rect width="240" height="80" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <rect x="0" y="0" width="4" height="80" rx="2" fill="#ea580c"/>
+      <text x="20" y="28" fill="#0f172a" font-size="14" font-weight="700">Admin Console</text>
+      <text x="20" y="46" fill="#64748b" font-size="11">/admin · sidebar nav, charts</text>
+      <text x="20" y="62" fill="#64748b" font-size="11">User mgmt · suspend/unsuspend</text>
+      <text x="20" y="76" fill="#64748b" font-size="11">Live KPIs · ML insights</text>
+    </g>
+
+    <!-- Stadium QR (future) -->
+    <g transform="translate(820, 24)">
+      <rect width="240" height="80" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-dasharray="4,3"/>
+      <rect x="0" y="0" width="4" height="80" rx="2" fill="#94a3b8"/>
+      <text x="20" y="28" fill="#475569" font-size="14" font-weight="700">Stadium QR · North-star</text>
+      <text x="20" y="46" fill="#94a3b8" font-size="11">Scan at the turnstile</text>
+      <text x="20" y="62" fill="#94a3b8" font-size="11">→ /venues/[CODE] direct entry</text>
+      <text x="20" y="76" fill="#94a3b8" font-size="11">Wearable companion (concept)</text>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════ ROW 2 — EDGE ═══════════════════════ -->
+  <g transform="translate(60, 264)">
+    <text x="0" y="14" fill="#64748b" font-size="11" font-weight="600" letter-spacing="0.06em">EDGE &amp; IDENTITY</text>
+
+    <!-- CloudFront -->
+    <g transform="translate(0, 24)">
+      <rect width="240" height="76" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="26" fill="#0f172a" font-size="13" font-weight="700">CloudFront</text>
+      <text x="20" y="44" fill="#64748b" font-size="11">CDN · global edge</text>
+      <text x="20" y="60" fill="#64748b" font-size="11">HTTPS · cache invalidation</text>
+      <text x="220" y="20" text-anchor="end" fill="#94a3b8" font-size="10" font-weight="600">DELIVERY</text>
+    </g>
+
+    <!-- S3 (static hosting) -->
+    <g transform="translate(260, 24)">
+      <rect width="240" height="76" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="26" fill="#0f172a" font-size="13" font-weight="700">S3 — Frontend</text>
+      <text x="20" y="44" fill="#64748b" font-size="11">Static Next.js export (out/)</text>
+      <text x="20" y="60" fill="#64748b" font-size="11">14 pre-rendered HTML routes</text>
+      <text x="220" y="20" text-anchor="end" fill="#94a3b8" font-size="10" font-weight="600">HOSTING</text>
+    </g>
+
+    <!-- API Gateway WebSocket -->
+    <g transform="translate(520, 24)">
+      <rect width="240" height="76" rx="12" fill="#ffffff" stroke="#ea580c" stroke-width="1.5"/>
+      <text x="20" y="26" fill="#0f172a" font-size="13" font-weight="700">API Gateway · WebSocket</text>
+      <text x="20" y="44" fill="#64748b" font-size="11">Routes: $connect $disconnect</text>
+      <text x="20" y="60" fill="#64748b" font-size="11">predict · chat · leaderboard · adminAction</text>
+      <text x="220" y="20" text-anchor="end" fill="#ea580c" font-size="10" font-weight="700">REAL-TIME</text>
+    </g>
+
+    <!-- Cognito -->
+    <g transform="translate(820, 24)">
+      <rect width="240" height="76" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="26" fill="#0f172a" font-size="13" font-weight="700">Amazon Cognito</text>
+      <text x="20" y="44" fill="#64748b" font-size="11">Email/password user pool</text>
+      <text x="20" y="60" fill="#64748b" font-size="11">JWT → WebSocket on connect</text>
+      <text x="220" y="20" text-anchor="end" fill="#94a3b8" font-size="10" font-weight="600">IDENTITY</text>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════ ROW 3 — COMPUTE ═══════════════════════ -->
+  <g transform="translate(60, 384)">
+    <text x="0" y="14" fill="#64748b" font-size="11" font-weight="600" letter-spacing="0.06em">LAMBDA FUNCTIONS · PYTHON 3.12</text>
+
+    <!-- Connection lifecycle -->
+    <g transform="translate(0, 24)">
+      <rect width="356" height="148" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="26" fill="#0f172a" font-size="13" font-weight="700">Connection &amp; live events</text>
+      <line x1="16" y1="36" x2="340" y2="36" stroke="#e2e8f0"/>
+
+      <text x="16" y="58" fill="#0f172a" font-size="12" font-weight="600">λ connect</text>
+      <text x="120" y="58" fill="#64748b" font-size="11">Register fan · push ACCOUNT_STATUS</text>
+
+      <text x="16" y="78" fill="#0f172a" font-size="12" font-weight="600">λ disconnect</text>
+      <text x="120" y="78" fill="#64748b" font-size="11">Remove from Connections table</text>
+
+      <text x="16" y="98" fill="#0f172a" font-size="12" font-weight="600">λ event_emitter</text>
+      <text x="120" y="98" fill="#64748b" font-size="11">Reads next event · resolves picks</text>
+
+      <text x="16" y="118" fill="#0f172a" font-size="12" font-weight="600">λ broadcast</text>
+      <text x="120" y="118" fill="#64748b" font-size="11">Fan-out MATCH_EVENT to all sockets</text>
+
+      <text x="16" y="138" fill="#0f172a" font-size="12" font-weight="600">λ predict</text>
+      <text x="120" y="138" fill="#64748b" font-size="11">Store fan's YES/NO · award XP later</text>
+    </g>
+
+    <!-- Engagement -->
+    <g transform="translate(376, 24)">
+      <rect width="356" height="148" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="26" fill="#0f172a" font-size="13" font-weight="700">Engagement</text>
+      <line x1="16" y1="36" x2="340" y2="36" stroke="#e2e8f0"/>
+
+      <text x="16" y="58" fill="#0f172a" font-size="12" font-weight="600">λ leaderboard</text>
+      <text x="130" y="58" fill="#64748b" font-size="11">Top-50 + caller · chat history piggy-back</text>
+
+      <text x="16" y="78" fill="#0f172a" font-size="12" font-weight="600">λ chat</text>
+      <text x="130" y="78" fill="#64748b" font-size="11">Broadcast + persist (last 100)</text>
+
+      <text x="16" y="98" fill="#0f172a" font-size="12" font-weight="600">λ admin_action</text>
+      <text x="130" y="98" fill="#64748b" font-size="11">Suspend / unsuspend · user list</text>
+
+      <text x="16" y="118" fill="#0f172a" font-size="12" font-weight="600">λ avatar_upload</text>
+      <text x="130" y="118" fill="#64748b" font-size="11">Presigned S3 PUT URL</text>
+
+      <text x="16" y="138" fill="#475569" font-size="11" font-style="italic">All share a common arena layer (ws, db, responses)</text>
+    </g>
+
+    <!-- AI / Personalization -->
+    <g transform="translate(752, 24)">
+      <rect width="308" height="148" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="26" fill="#0f172a" font-size="13" font-weight="700">AI &amp; ML</text>
+      <line x1="16" y1="36" x2="292" y2="36" stroke="#e2e8f0"/>
+
+      <text x="16" y="58" fill="#0f172a" font-size="12" font-weight="600">λ bedrock_commentary</text>
+      <text x="16" y="74" fill="#64748b" font-size="11">Claude Haiku 4.5 · per-persona prompt</text>
+      <text x="16" y="88" fill="#64748b" font-size="11">Graceful fallback to local templates</text>
+
+      <text x="16" y="112" fill="#0f172a" font-size="12" font-weight="600">xG ML model (in-process)</text>
+      <text x="16" y="128" fill="#64748b" font-size="11">Logistic regression · 57k StatsBomb shots</text>
+      <text x="16" y="142" fill="#64748b" font-size="11">AUC 0.75 · runs in &lt;1 ms inside event_emitter</text>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════ ROW 4 — STORAGE ═══════════════════════ -->
+  <g transform="translate(60, 580)">
+    <text x="0" y="14" fill="#64748b" font-size="11" font-weight="600" letter-spacing="0.06em">DATA &amp; STORAGE</text>
+
+    <!-- DynamoDB -->
+    <g transform="translate(0, 24)">
+      <rect width="780" height="100" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="26" fill="#0f172a" font-size="13" font-weight="700">DynamoDB · PAY_PER_REQUEST</text>
+      <line x1="16" y1="36" x2="764" y2="36" stroke="#e2e8f0"/>
+
+      <g transform="translate(16, 50)">
+        <text x="0" y="14" fill="#0f172a" font-size="11" font-weight="600">Connections</text>
+        <text x="0" y="30" fill="#64748b" font-size="10">PK connectionId · TTL</text>
+      </g>
+      <g transform="translate(160, 50)">
+        <text x="0" y="14" fill="#0f172a" font-size="11" font-weight="600">Players</text>
+        <text x="0" y="30" fill="#64748b" font-size="10">PK playerId · XP/streak</text>
+      </g>
+      <g transform="translate(300, 50)">
+        <text x="0" y="14" fill="#0f172a" font-size="11" font-weight="600">Predictions</text>
+        <text x="0" y="30" fill="#64748b" font-size="10">PK predictionId</text>
+      </g>
+      <g transform="translate(450, 50)">
+        <text x="0" y="14" fill="#0f172a" font-size="11" font-weight="600">MatchEvents</text>
+        <text x="0" y="30" fill="#64748b" font-size="10">PK match · SK eventTime</text>
+      </g>
+      <g transform="translate(610, 50)">
+        <text x="0" y="14" fill="#0f172a" font-size="11" font-weight="600">GameRoom</text>
+        <text x="0" y="30" fill="#64748b" font-size="10">PK roomId · chatHistory</text>
+      </g>
+    </g>
+
+    <!-- S3 -->
+    <g transform="translate(800, 24)">
+      <rect width="260" height="100" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="26" fill="#0f172a" font-size="13" font-weight="700">S3 buckets</text>
+      <line x1="16" y1="36" x2="244" y2="36" stroke="#e2e8f0"/>
+
+      <text x="16" y="56" fill="#0f172a" font-size="11" font-weight="600">connected-arena-frontend</text>
+      <text x="16" y="72" fill="#64748b" font-size="10">Static site (out/)</text>
+
+      <text x="16" y="92" fill="#64748b" font-size="10" font-style="italic">+ DFL match-data XML source</text>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════ ARROWS — DATA FLOW ═══════════════════════ -->
+  <!-- Clients -> Edge -->
+  <line x1="120" y1="244" x2="120" y2="288" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowN)"/>
+  <line x1="380" y1="244" x2="380" y2="288" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowN)"/>
+  <line x1="640" y1="244" x2="640" y2="288" stroke="#ea580c" stroke-width="1.5" marker-end="url(#arrowA)"/>
+  <line x1="940" y1="244" x2="940" y2="288" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowN)"/>
+
+  <!-- Edge (WebSocket) -> Compute -->
+  <line x1="640" y1="364" x2="640" y2="408" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowA)"/>
+
+  <!-- Cognito -> API Gateway (JWT) -->
+  <line x1="820" y1="326" x2="760" y2="326" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowN)"/>
+  <text x="772" y="320" fill="#94a3b8" font-size="9" text-anchor="middle">JWT</text>
+
+  <!-- CloudFront -> S3 frontend (static) -->
+  <line x1="240" y1="326" x2="260" y2="326" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowN)"/>
+
+  <!-- Compute -> Storage (writes) -->
+  <line x1="200" y1="556" x2="200" y2="604" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowN)"/>
+  <line x1="600" y1="556" x2="600" y2="604" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowN)"/>
+  <line x1="900" y1="556" x2="900" y2="604" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrowN)"/>
+
+  <!-- ═══ Legend ═══ -->
+  <g transform="translate(60, 738)">
+    <text x="0" y="14" fill="#64748b" font-size="11" font-weight="600" letter-spacing="0.06em">LEGEND</text>
+    <g transform="translate(0, 24)">
+      <line x1="0" y1="6" x2="32" y2="6" stroke="#ea580c" stroke-width="2"/>
+      <text x="40" y="10" fill="#475569" font-size="11">Real-time hot path</text>
+
+      <line x1="160" y1="6" x2="192" y2="6" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="200" y="10" fill="#475569" font-size="11">Control / data flow</text>
+
+      <line x1="316" y1="6" x2="348" y2="6" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="356" y="10" fill="#475569" font-size="11">Optional / future</text>
+
+      <rect x="494" y="0" width="14" height="12" rx="3" fill="#ffffff" stroke="#ea580c" stroke-width="1.5"/>
+      <text x="516" y="10" fill="#475569" font-size="11">Brand-accented (Real-time core)</text>
+    </g>
+  </g>
 </svg>

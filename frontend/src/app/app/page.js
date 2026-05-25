@@ -565,7 +565,7 @@ export default function ArenaPage() {
   if (!authChecked) {
     return (
       <div className="arena-loading">
-        <div className="arena-loading-logo">⚽</div>
+        <Logo size={56} className="arena-loading-logo" />
         <div className="arena-loading-text">Loading…</div>
       </div>
     );
@@ -575,7 +575,7 @@ export default function ArenaPage() {
   if (!authChecked) {
     return (
       <div className="arena-loading">
-        <div className="arena-loading-logo">⚽</div>
+        <Logo size={56} className="arena-loading-logo" />
         <div className="arena-loading-text">Loading…</div>
       </div>
     );
