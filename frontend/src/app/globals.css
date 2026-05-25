@@ -9133,3 +9133,80 @@ button:disabled,
   .admin-burger { display: none !important; }
   .admin-sidebar-backdrop { display: none !important; }
 }
+
+/* -- Chat house-rules banner -------------------------------------- */
+.ct-rules {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 12px 0;
+  padding: 12px 14px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    color-mix(in srgb, var(--accent) 6%,  transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: var(--r-md);
+  animation: ctRulesIn 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes ctRulesIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ct-rules-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.ct-rules-body { flex: 1; min-width: 0; }
+.ct-rules-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.008em;
+  margin-bottom: 2px;
+}
+.ct-rules-text {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.ct-rules-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: -2px;
+  transition: background 140ms ease, color 140ms ease;
+}
+.ct-rules-close:hover {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--text);
+}
+
+/* Permanent "Chat is monitored" hint under the input */
+.ct-monitor-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 500;
+}
+.ct-monitor-hint svg { color: var(--accent); opacity: 0.85; }
+.ct-char-hint {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 540px) {
+  .ct-rules        { margin: 8px 8px 0; padding: 10px 12px; }
+  .ct-rules-title  { font-size: 12px; }
+  .ct-rules-text   { font-size: 11px; }
+  .ct-monitor-hint { font-size: 10px; }
+}

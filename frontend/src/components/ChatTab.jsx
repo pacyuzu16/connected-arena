@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageSquare, Send, SmilePlus, WifiOff, ArrowDown, Sparkles } from "lucide-react";
+import { MessageSquare, Send, SmilePlus, WifiOff, ArrowDown, Sparkles, ShieldCheck, X } from "lucide-react";
+
+const HOUSE_RULES_KEY = "arena-chat-rules-seen";
 
 const REACTIONS = ["🔥", "👏", "😮", "❤️", "😂", "⚽"];
 
@@ -37,8 +39,21 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
   const [reactionTarget, setRT]     = useState(null);  // message id for reaction picker
   const [msgReactions, setMsgRx]    = useState({});    // { msgId: { emoji: count } }
   const [xpFlash, setXpFlash]       = useState(null);  // "You earned +5 XP!" toast
+  const [rulesDismissed, setRulesDismissed] = useState(true); // hydrated below
   const listRef  = useRef(null);
   const inputRef = useRef(null);
+
+  // House-rules banner: shown to first-time chat users, dismissible.
+  // Stored in localStorage so it stays dismissed across refreshes.
+  useEffect(() => {
+    try {
+      setRulesDismissed(localStorage.getItem(HOUSE_RULES_KEY) === "1");
+    } catch { setRulesDismissed(false); }
+  }, []);
+  function dismissRules() {
+    setRulesDismissed(true);
+    try { localStorage.setItem(HOUSE_RULES_KEY, "1"); } catch {}
+  }
 
   // Close the reaction picker when clicking anywhere outside of it.
   // Works on both mouse and touch — replaces the broken onMouseLeave handler.
@@ -126,6 +141,29 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
 
   return (
     <div className="ct-wrap">
+
+      {/* ── House-rules banner — shown once, dismissible ── */}
+      {!rulesDismissed && (
+        <div className="ct-rules" role="note">
+          <ShieldCheck size={15} strokeWidth={1.75} className="ct-rules-icon" />
+          <div className="ct-rules-body">
+            <div className="ct-rules-title">Keep it friendly</div>
+            <div className="ct-rules-text">
+              This is a public chat. Be respectful — no hate, harassment, or
+              spam. Messages are monitored and inappropriate content can be
+              removed and accounts suspended.
+            </div>
+          </div>
+          <button
+            type="button"
+            className="ct-rules-close"
+            onClick={dismissRules}
+            aria-label="Got it, dismiss this notice"
+          >
+            <X size={14} strokeWidth={2} />
+          </button>
+        </div>
+      )}
 
       {/* ── Header ── */}
       <div className="ct-hdr">
@@ -236,7 +274,7 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
             <input
               ref={inputRef}
               className="ct-input"
-              placeholder={connected ? "Say something…" : "Connecting…"}
+              placeholder={connected ? "Say something — keep it friendly…" : "Connecting…"}
               value={draft}
               onChange={e => setDraft(e.target.value)}
               maxLength={200}
@@ -258,6 +296,9 @@ export default function ChatTab({ messages = [], onSend, playerName, connected }
           <div className="ct-char-hint">
             {draft.length > 150 && <span>{200 - draft.length} chars left</span>}
             <span className="ct-xp-hint"><Sparkles size={11} strokeWidth={1.75} /> Every 5 messages = +5 XP</span>
+            <span className="ct-monitor-hint" title="Inappropriate content may be removed and accounts suspended">
+              <ShieldCheck size={11} strokeWidth={1.75} /> Chat is monitored
+            </span>
           </div>
         </div>
 
