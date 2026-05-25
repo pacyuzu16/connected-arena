@@ -39,9 +39,10 @@ export default function MobileProfileTab({ player, recentActivity = [], avatarUr
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const b64 = ev.target.result;
-      localStorage.setItem(`arena-avatar-${player.name}`, b64);
-      onAvatarChange(b64);
+      // Parent owns persistence (localStorage write happens in page.js
+      // under a stable playerId/sub key — keeps the avatar through name
+      // changes, refreshes, and sign-outs).
+      onAvatarChange(ev.target.result);
     };
     reader.readAsDataURL(file);
   };

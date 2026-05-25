@@ -318,18 +318,42 @@ export default function ArenaPage() {
     checkAuth();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Load avatar — prefer S3 CDN for Cognito users, localStorage for guests
-  useEffect(() => {
-    if (!playerName) return;
-    if (authUser?.sub) {
-      // Cognito user: avatar lives in S3
-      const cdnBase = process.env.NEXT_PUBLIC_CDN_BASE || "https://d1706ex99mjina.cloudfront.net";
-      setAvatarUrl(`${cdnBase}/avatars/${authUser.sub}.jpg`);
-    } else {
-      const saved = localStorage.getItem(`arena-avatar-${playerName}`);
-      setAvatarUrl(saved || null);
+  // Stable avatar storage key — survives name changes, sign-outs, refreshes.
+  // Priority: Cognito sub > saved guest playerId. Falls back to playerName
+  // only for the brief window before either is available.
+  const avatarStorageKey = useMemo(() => {
+    if (authUser?.sub) return `arena-avatar-${authUser.sub}`;
+    if (typeof window !== "undefined") {
+      const pid = localStorage.getItem("arena-player-id");
+      if (pid) return `arena-avatar-${pid}`;
     }
-  }, [playerName, authUser]);
+    return playerName ? `arena-avatar-${playerName}` : null;
+  }, [authUser, playerName]);
+
+  // Load the persisted avatar on mount + whenever the stable key changes.
+  // localStorage is the source of truth — works for both Cognito and guests.
+  useEffect(() => {
+    if (!avatarStorageKey || typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem(avatarStorageKey);
+      setAvatarUrl(saved || null);
+    } catch { setAvatarUrl(null); }
+  }, [avatarStorageKey]);
+
+  // Wrapper that persists every avatar update to localStorage automatically.
+  // Components only need to call this — they no longer write to localStorage
+  // themselves with mismatched keys.
+  const persistAvatar = (value) => {
+    setAvatarUrl(value);
+    if (!avatarStorageKey || typeof window === "undefined") return;
+    try {
+      if (value) localStorage.setItem(avatarStorageKey, value);
+      else       localStorage.removeItem(avatarStorageKey);
+    } catch (e) {
+      // localStorage quota exceeded — image too large
+      console.warn("Could not persist avatar:", e?.message);
+    }
+  };
 
   const toggleTheme = () => {
     if (theme === "dark") setTheme("light");
@@ -526,47 +550,15 @@ export default function ArenaPage() {
     setTimeout(() => connect(newName.trim(), persona, jwtRef.current), 100);
   };
 
-  // ── Avatar upload via S3 presigned URL ─────────────────────────────────
-  useEffect(() => {
-    if (!avatarUploadUrl) return;
-    // This fires when the server sends AVATAR_UPLOAD_URL back
-    // The actual file upload is triggered by the profile panel's file picker
-    // We store the pending upload info so the panel can use it
-  }, [avatarUploadUrl]);
-
-  const handleAvatarChange = async (file) => {
-    if (!file) return;
-    if (authUser?.sub) {
-      // Cognito user: upload directly to S3 via presigned URL
-      requestAvatarUpload(); // ask server for a presigned URL
-      // We'll need to listen for avatarUploadUrl to change — handled below
-    } else {
-      // Guest: base64 in localStorage
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const b64 = ev.target.result;
-        localStorage.setItem(`arena-avatar-${playerName}`, b64);
-        setAvatarUrl(b64);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // When presigned URL arrives, upload the pending file
-  const pendingFileRef = useRef(null);
-  useEffect(() => {
-    if (!avatarUploadUrl?.url || !pendingFileRef.current) return;
-    const file = pendingFileRef.current;
-    pendingFileRef.current = null;
-    fetch(avatarUploadUrl.url, {
-      method:  "PUT",
-      headers: { "Content-Type": "image/jpeg" },
-      body:    file,
-    }).then(() => {
-      // Force refresh with cache-busting
-      setAvatarUrl(avatarUploadUrl.avatarUrl + "?t=" + Date.now());
-    }).catch(console.error);
-  }, [avatarUploadUrl]);
+  // Avatar storage strategy:
+  //   - Components read the picked file, convert to base64, and call
+  //     `persistAvatar(b64)` (defined above) which both updates state
+  //     and writes to localStorage under the stable avatarStorageKey.
+  //   - Works identically for guests AND Cognito users — no S3 round-trip
+  //     needed for the demo. The S3 presigned-URL path that used to live
+  //     here was structurally broken (the pending-file ref was never set)
+  //     and the Bedrock-style SCP on this account would block the bucket
+  //     PUT anyway, so localStorage is the only reliable path.
 
   // ── Routing ────────────────────────────────────────────────────────────────
   // Block render until the mount auth-check resolves (prevents flicker)
@@ -832,7 +824,7 @@ export default function ArenaPage() {
               player={fullPlayer}
               recentActivity={recentActivity}
               avatarUrl={avatarUrl}
-              onAvatarChange={setAvatarUrl}
+              onAvatarChange={persistAvatar}
               onNameChange={handleNameChange}
               theme={theme}
               toggleTheme={toggleTheme}
@@ -954,7 +946,7 @@ export default function ArenaPage() {
             player={fullPlayer}
             recentActivity={recentActivity}
             avatarUrl={avatarUrl}
-            onAvatarChange={setAvatarUrl}
+            onAvatarChange={persistAvatar}
             onNameChange={handleNameChange}
             theme={theme}
             toggleTheme={toggleTheme}

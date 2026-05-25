@@ -64,9 +64,9 @@ export default function DesktopProfilePanel({
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const b64 = ev.target.result;
-      localStorage.setItem(`arena-avatar-${player.name}`, b64);
-      onAvatarChange?.(b64);
+      // Parent owns persistence (writes to localStorage under a stable
+      // playerId/sub key in page.js — survives name changes & refreshes).
+      onAvatarChange?.(ev.target.result);
     };
     reader.readAsDataURL(file);
   };
