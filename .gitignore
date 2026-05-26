@@ -2,10 +2,21 @@
 node_modules/
 frontend/node_modules/
 
-# Build output
-frontend/build/
+# Python virtualenv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+
+# Next.js / frontend build output
 frontend/.next/
 frontend/out/
+frontend/build/
 frontend/tsconfig.tsbuildinfo
 
 # SAM build artifacts
@@ -18,18 +29,6 @@ frontend/.env
 
 # AWS credentials / config
 .aws/
-
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.Python
-*.egg-info/
-dist/
-build/
-.venv/
-venv/
 
 # OS
 .DS_Store
@@ -46,3 +45,5 @@ npm-debug.log*
 
 # Misc
 frontend/output.json
+dist/
+build/

@@ -1,3 +1,0 @@
-POOL_ID=eu-central-1_HzdOR3DlT
-CLIENT_ID=47ma9b1sc4k3gkstl1474lr52e
-DOMAIN=connected-arena-auth

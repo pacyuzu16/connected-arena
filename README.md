@@ -67,7 +67,6 @@ Each fan also has a **profile** with stats, badges, avatar, settings (mute toggl
    - **User Management** — every connected fan, search, suspend / unsuspend troublemakers
    - **Leaderboard** — full live ranking (top 50)
    - **Match Status** — score, event distribution, real-time activity log
-   - **Identity & Auth** — the auth strategy / north-star vision
 4. Sidebar footer has a **Stadium View** link — pops open the big-screen / watch-party view in a new tab. Project it on a TV.
 
 ### As a watch-party host — using the big screen
