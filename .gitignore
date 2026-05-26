@@ -47,3 +47,7 @@ npm-debug.log*
 frontend/output.json
 dist/
 build/
+
+# Large media files
+docs/presentation_video.mp4
+*.mp4
