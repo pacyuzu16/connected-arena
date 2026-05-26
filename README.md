@@ -136,7 +136,7 @@ Re-enables the EventBridge scheduler so events emit automatically every minute a
 - **Stadium gateway.** Six real venues let fans "enter" a stadium (scan a QR at the gate, or click from the venues directory) to access the match scoped to that ground.
 - **No servers to babysit.** Everything runs on AWS Lambda, DynamoDB, and CloudFront. Scales from 10 fans to 10 million without changing a line of code.
 
-## The team
+## The team — CHAMPS
 
 | Names |
 |------|
