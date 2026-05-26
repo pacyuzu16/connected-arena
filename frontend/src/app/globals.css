@@ -3930,7 +3930,7 @@ button, input, textarea, select {
    ADMIN DASHBOARD
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Sidebar shell layout (Claude-style nav) ───────────────────────── */
+/* ── Sidebar shell layout ─────────────────────────────────────────── */
 .admin-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
